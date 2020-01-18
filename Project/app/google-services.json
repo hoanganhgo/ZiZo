@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "956234374702",
+    "firebase_url": "https://zizo-9fdb5.firebaseio.com",
+    "project_id": "zizo-9fdb5",
+    "storage_bucket": "zizo-9fdb5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:956234374702:android:3ad65b7af7ee4b7ea209bf",
+        "android_client_info": {
+          "package_name": "com.example.zizo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "956234374702-gup30660h61q3jf2vbg4q50s55gh2vom.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.zizo",
+            "certificate_hash": "c7a35d69b08c92225cd6172dd10cbdbe6d6c3ea7"
+          }
+        },
+        {
+          "client_id": "956234374702-f5ijo08ab4m1lguu79fa1ttt7ania2j8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDain4v3n4DfAS2ho0NDLPxLHsWN9pwo6I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "956234374702-f5ijo08ab4m1lguu79fa1ttt7ania2j8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

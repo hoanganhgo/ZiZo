@@ -1,0 +1,23 @@
+- Người dùng phải tạo tài khoản để đăng nhập.
+- Sử dụng thư viện Author để làm chức năng đăng nhập - đăng xuất.
+
+* Trang hồ sơ cá nhân.
+- Khi tạo tài khoản người dùng sẽ cung cấp các thông tin: username, password, nickname, avatar, ngày sinh,
+giới tính, số điện thoại.
+- Mọi thông tin (ngoài username) đều có thể được chỉnh sửa.
+- Được phép upload avatar.
+
+* Tường nhà.
+- Đăng ảnh và nội dung lên tường, có lưu lại thời gian đăng status.
+- Cho phép bạn bè like và bình luận.
+
+* Tương tác.
+- Cho phép người khác follow.
+- Người khác có thể tìm thấy bạn thông qua username.
+- Cho phép kết bạn.
+- Những status của bạn và người mình follow sẽ hiển thị lên nhật ký.
+- Những người bạn với nhau có thể chat với nhau.
+
+* Khác.
+- Hiển thị danh sách các hộp thư.
+- Hiển thị danh sách bạn bè, cho biết ai đang online.

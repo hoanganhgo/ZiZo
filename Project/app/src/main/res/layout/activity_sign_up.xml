@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/inputEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Nhập Email"
+        android:layout_gravity="center"
+        android:width="350dp"
+        android:layout_marginTop="250dp"/>
+
+    <EditText
+        android:id="@+id/inputPassWord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Nhập Password"
+        android:inputType="textPassword"
+        android:layout_gravity="center"
+        android:width="350dp"
+        android:layout_marginTop="20dp"/>
+
+    <Button
+        android:id="@+id/signUp_Click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Đăng ký"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"/>
+
+</LinearLayout>

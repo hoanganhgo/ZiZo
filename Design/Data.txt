@@ -1,0 +1,10 @@
+*User
+- userName, passWord, nickName, avatar, dateOfBirth, sex, phoneNumber, friends (array), follows (array).
+*Status.
+- id, userName, image, content, dateTime, likes (array), comments (array comment).
+* Comment.
+- nickname, avatar, content.
+* ChatBox.
+- userName, messages (array message).
+* Message.
+- sender, content.

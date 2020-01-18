@@ -1,0 +1,89 @@
+package com.example.zizo;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+public class MainActivity extends AppCompatActivity {
+
+    private FirebaseAuth mAuth;
+    final String TAG="signUp123";
+    Button btn_signUp;
+    EditText email;
+    EditText password;
+    Button btn_signIn;
+
+    ProgressBar progressBar;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+
+        btn_signUp=(Button)findViewById(R.id.signUp);
+        email=(EditText)findViewById(R.id.Email);
+        password=(EditText)findViewById(R.id.PassWord);
+        btn_signIn=(Button)findViewById(R.id.signIn_Click);
+        progressBar=(ProgressBar)findViewById(R.id.progressBar_cyclic);
+
+        btn_signIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signIn(email.getText().toString(), password.getText().toString());
+            }
+        });
+
+        btn_signUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this, SignUpActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void signIn(String email, String password)
+    {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithEmail:success");
+                            Toast.makeText(MainActivity.this, "Đăng nhập thành công",
+                                    Toast.LENGTH_SHORT).show();
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Intent intent=new Intent(MainActivity.this,Home.class);
+                            startActivity(intent);
+                           // updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(MainActivity.this, "Đăng nhập thất bại",
+                                    Toast.LENGTH_SHORT).show();
+                           // updateUI(null);
+                        }
+
+                        // ...
+                    }
+                });
+    }
+}
