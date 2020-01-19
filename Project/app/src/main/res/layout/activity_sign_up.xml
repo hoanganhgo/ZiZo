@@ -3,6 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <EditText
         android:id="@+id/inputEmail"
         android:layout_width="wrap_content"
@@ -10,16 +11,67 @@
         android:hint="Nhập Email"
         android:layout_gravity="center"
         android:width="350dp"
-        android:layout_marginTop="250dp"/>
+        android:layout_marginTop="100dp"/>
 
     <EditText
         android:id="@+id/inputPassWord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Nhập Password"
+        android:hint="Nhập mật khẩu"
         android:inputType="textPassword"
         android:layout_gravity="center"
         android:width="350dp"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/rePassWord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Nhập lại mật khẩu"
+        android:inputType="textPassword"
+        android:layout_gravity="center"
+        android:width="350dp"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/inputNick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Nhập Nick Name"
+        android:layout_gravity="center"
+        android:width="350dp"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Giới tính"
+        android:textSize="20dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="20dp"/>
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp">
+        <RadioButton
+            android:id="@+id/male"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nam"/>
+        <RadioButton
+            android:id="@+id/female"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nữ"/>
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/dateOfBirth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:hint="Nhập ngày sinh của bạn"
+        android:layout_marginLeft="40dp"
         android:layout_marginTop="20dp"/>
 
     <Button

@@ -12,7 +12,7 @@ giới tính, số điện thoại.
 - Cho phép bạn bè like và bình luận.
 
 * Tương tác.
-- Cho phép người khác follow.
+- Cho phép người khác follow. Khi follow thì chưa thể chat, chỉ kết bạn mới có quyền chat.
 - Người khác có thể tìm thấy bạn thông qua username.
 - Cho phép kết bạn.
 - Những status của bạn và người mình follow sẽ hiển thị lên nhật ký.
