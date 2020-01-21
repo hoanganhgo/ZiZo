@@ -3,11 +3,15 @@ package com.example.zizo;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -25,9 +29,11 @@ public class MainActivity extends AppCompatActivity {
     Button btn_signUp;
     EditText email;
     EditText password;
+    CheckBox saveUser;
     Button btn_signIn;
 
-    ProgressBar progressBar;
+    SharedPreferences sharedPreferences;
+    //ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +46,21 @@ public class MainActivity extends AppCompatActivity {
         btn_signUp=(Button)findViewById(R.id.signUp);
         email=(EditText)findViewById(R.id.Email);
         password=(EditText)findViewById(R.id.PassWord);
+        saveUser=(CheckBox)findViewById(R.id.saveUserName);
         btn_signIn=(Button)findViewById(R.id.signIn_Click);
-        progressBar=(ProgressBar)findViewById(R.id.progressBar_cyclic);
+        //progressBar=(ProgressBar)findViewById(R.id.progressBar_cyclic);
+
+        //Tải lại tài khoản và mật khẩu đã lưu
+        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String savedEmail=sharedPreferences.getString("Email",null);
+        String savedPass=sharedPreferences.getString("PassWord",null);
+
+        if (savedEmail!=null && savedPass!=null)
+        {
+            email.setText(savedEmail);
+            password.setText(savedPass);
+            saveUser.setChecked(true);
+        }
 
         btn_signIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void signIn(String email, String password)
+    private void signIn(final String email, final String password)
     {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -71,6 +90,26 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this, "Đăng nhập thành công",
                                     Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
+
+                            //Lưu tài khoản mật khẩu
+                            if (saveUser.isChecked()) {
+                                //sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                                editor.putString("Email", email);
+                                editor.putString("PassWord", password);
+                                editor.apply();
+                            }
+                            else
+                            {
+                                //sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                                editor.clear();
+                                editor.apply();
+                            }
+
+                            //Chuyển màn hình
                             Intent intent=new Intent(MainActivity.this, HomeActivity.class);
                             startActivity(intent);
                            // updateUI(user);

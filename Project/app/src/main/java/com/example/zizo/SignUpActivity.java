@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -102,7 +103,9 @@ public class SignUpActivity extends AppCompatActivity {
     //Ghi thông tin user vào database
     private void upLoadUser(String email, String nickName, String dateOfBirth, String sex)
     {
-        Class_User user=new Class_User(email,nickName,null,dateOfBirth,sex,null,null);
+        long realTime=(new Date()).getTime();
+
+        Class_User user=new Class_User(email,nickName,null,dateOfBirth,sex,realTime,null,null, null);
 
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
