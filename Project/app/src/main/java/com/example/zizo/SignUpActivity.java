@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.zizo.object.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -20,7 +21,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -105,7 +105,15 @@ public class SignUpActivity extends AppCompatActivity {
     {
         long realTime=(new Date()).getTime();
 
-        Class_User user=new Class_User(email,nickName,null,dateOfBirth,sex,realTime,null,null, null);
+        String avatar=null;
+        if (sex.contentEquals("Nam"))
+        {
+            avatar="https://firebasestorage.googleapis.com/v0/b/zizo-9fdb5.appspot.com/o/avatars%2Fman.png?alt=media&token=6506dc54-0ff9-4a1e-93b1-a3f6b81dd27b";
+        }else {
+            avatar="https://firebasestorage.googleapis.com/v0/b/zizo-9fdb5.appspot.com/o/avatars%2Fwoman.png?alt=media&token=7d5b9698-4854-4979-8e56-dff8d06ffe5d";
+        }
+
+        User user=new User(email,nickName,avatar,dateOfBirth,sex,realTime,null,null, null);
 
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();

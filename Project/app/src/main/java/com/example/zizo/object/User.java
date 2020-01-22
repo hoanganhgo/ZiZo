@@ -1,9 +1,9 @@
-package com.example.zizo;
+package com.example.zizo.object;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Class_User {
+public class User {
     private String email;
     private String nickName;
     private String avatar;
@@ -15,7 +15,7 @@ public class Class_User {
 
     private ArrayList<String> invitation;    //Lời mời kết bạn dành cho bạn
 
-    public Class_User(String email, String nickName, String avatar, String dateOfBirth, String sex, long realTime, ArrayList<String> friends, ArrayList<String> follows, ArrayList<String> invitation) {
+    public User(String email, String nickName, String avatar, String dateOfBirth, String sex, long realTime, ArrayList<String> friends, ArrayList<String> follows, ArrayList<String> invitation) {
         this.email = email;
         this.nickName = nickName;
         this.avatar = avatar;

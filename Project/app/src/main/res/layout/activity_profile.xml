@@ -8,18 +8,29 @@
         android:layout_marginTop="-20dp"
         android:src="@drawable/bg_home" />
 
-    <ImageView
-        android:id="@+id/avatar"
+    <Button
+        android:id="@+id/btn_avatar"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/ic_launcher_foreground"
+        android:background="@color/transparent"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/avatar"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:src="@drawable/user"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        app:civ_border_width="2dp"
+        app:civ_border_color="@color/sky"/>
+
     <TextView
         android:id="@+id/nickName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nick Name"
         android:textSize="25dp"
         android:textColor="@color/white"
         android:layout_centerHorizontal="true"
