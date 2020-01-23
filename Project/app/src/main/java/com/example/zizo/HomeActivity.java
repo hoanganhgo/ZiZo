@@ -51,7 +51,7 @@ public class HomeActivity extends AppCompatActivity {
                         Long realTime=(new Date()).getTime();
                         myRef.setValue(realTime);
 
-                        sleep(2000);
+                        sleep(59000);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();

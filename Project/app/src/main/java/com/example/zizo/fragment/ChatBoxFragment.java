@@ -20,7 +20,6 @@ import com.example.zizo.R;
 import com.example.zizo.SearchActivity;
 import com.example.zizo.adapter.CustomListAdapterUser;
 import com.example.zizo.adapter.UserBasic;
-import com.example.zizo.object.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,13 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Date;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FriendFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class FriendFragment extends Fragment{
+public class ChatBoxFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -56,7 +49,7 @@ public class FriendFragment extends Fragment{
 
     private int size=0;
 
-    public FriendFragment() {
+    public ChatBoxFragment() {
         // Required empty public constructor
     }
     /**
@@ -85,10 +78,10 @@ public class FriendFragment extends Fragment{
         }
     }
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,@Nullable ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.activity_friends, container, false);
+        final View view = inflater.inflate(R.layout.activity_chatbox, container, false);
 
         btn_search=(ImageButton)view.findViewById(R.id.button_search);
         btn_invitation=(ImageButton)view.findViewById(R.id.button_invitation);

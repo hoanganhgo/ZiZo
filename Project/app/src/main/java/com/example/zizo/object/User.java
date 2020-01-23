@@ -14,6 +14,7 @@ public class User {
     private ArrayList<String> follows;
 
     private ArrayList<String> invitation;    //Lời mời kết bạn dành cho bạn
+    private ArrayList<String> chatBox;
 
     public User(String email, String nickName, String avatar, String dateOfBirth, String sex, long realTime, ArrayList<String> friends, ArrayList<String> follows, ArrayList<String> invitation) {
         this.email = email;
@@ -79,5 +80,13 @@ public class User {
     public void removeInvitation(String email)
     {
         this.invitation.remove(email);
+    }
+
+    public ArrayList<String> getChatBox() {
+        return chatBox;
+    }
+
+    public void setChatBox(ArrayList<String> chatBox) {
+        this.chatBox = chatBox;
     }
 }
