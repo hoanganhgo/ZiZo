@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.zizo.R;
+import com.example.zizo.adapter.CustomListAdapterStatus;
+import com.example.zizo.object.Status;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -31,18 +34,13 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.Date;
+
 public class ProfileFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+
     private static final int PICKFILE_RESULT_CODE = 0;
-    // TODO: Rename and change types of parameters
+
     private String mParam1;
     private String mParam2;
     private DatabaseReference myRef;
@@ -52,34 +50,12 @@ public class ProfileFragment extends Fragment {
     private TextView nickName;
     private Button btn_avatar;
     private ImageView avatar;
+    private ListView lv_status;
 
-    public ProfileFragment() {
-        // Required empty public constructor
-    }
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
-        ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        //do nothing
     }
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,@Nullable ViewGroup container,
@@ -148,7 +124,20 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        //Set ListView Status
+        lv_status=(ListView)view.findViewById(R.id.my_status_list);
 
+        ArrayList<Status> status_list=new ArrayList<Status>();
+
+        String email="hoang@zizo-com";
+        String content="Happy new year!";
+        String image="https://www.gannett-cdn.com/presto/2019/12/18/PGRE/4fa79f9a-8d51-4736-9035-c62452c34e4e-new_years.jpg?width=540&height=&fit=bounds&auto=webp";
+        long time=(new Date()).getTime();
+        Status status=new Status(email,content,image,time,null,null);
+
+        status_list.add(status);
+
+        lv_status.setAdapter(new CustomListAdapterStatus(view.getContext(),status_list));
         return view;
     }
 

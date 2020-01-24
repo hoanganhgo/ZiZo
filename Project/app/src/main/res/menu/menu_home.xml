@@ -9,7 +9,7 @@
         android:icon="@drawable/friends"
         android:title="Bạn bè" />
     <item
-        android:id="@+id/navigation_history"
+        android:id="@+id/navigation_diary"
         android:icon="@drawable/history"
         android:title="Nhật ký" />
     <item

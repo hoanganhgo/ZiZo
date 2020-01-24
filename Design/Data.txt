@@ -1,9 +1,9 @@
 *User
 - userName, passWord, nickName, avatar, dateOfBirth, sex, friends (array), follows (array), invitation (array), chatBox (array)
 *Status.
-- id, userName, image, content, dateTime, likes (array), comments (array comment).
+- id, email, image, content, dateTime, likes (array), comments (array comment).
 * Comment.
-- nickname, avatar, content.
+- email, content.
 * ChatBox. (key: username1+username2)
 - messages (array message).
 * Message.

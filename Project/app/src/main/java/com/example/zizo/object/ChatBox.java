@@ -1,16 +1,18 @@
-package com.example.zizo.adapter;
+package com.example.zizo.object;
 
-public class UserBasic {
+public class ChatBox {
 
     private String avatar;
     private boolean online;
     private String nickName;
+    private String message;
 
-    public UserBasic(String avatar, boolean online, String nickName)
+    public ChatBox(String avatar, boolean online, String nickName, String message)
     {
         this.avatar=avatar;
         this.online=online;
         this.nickName=nickName;
+        this.message=message;
     }
 
 
@@ -36,5 +38,13 @@ public class UserBasic {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

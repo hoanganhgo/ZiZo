@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:id="@+id/btn_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hôm nay bạn thấy thế nào?"
+        android:textSize="10sp"
+        android:textColor="@color/gray"
+        android:background="@drawable/background_post_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:paddingStart="25dp"
+        android:paddingEnd="25sp"/>
+
+    <ListView
+        android:id="@+id/diary"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/btn_post"/>
+</RelativeLayout>

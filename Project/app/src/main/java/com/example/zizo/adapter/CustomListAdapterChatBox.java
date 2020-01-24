@@ -8,18 +8,18 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.zizo.R;
+import com.example.zizo.object.ChatBox;
 import com.example.zizo.object.UserBasic;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class CustomListAdapterUser extends BaseAdapter {
-
-    private ArrayList<UserBasic> listData;
+public class CustomListAdapterChatBox extends BaseAdapter {
+    private ArrayList<ChatBox> listData;
     private LayoutInflater layoutInflater;
     private Context context;
 
-    public CustomListAdapterUser(Context context, ArrayList<UserBasic> listData)
+    public CustomListAdapterChatBox(Context context, ArrayList<ChatBox> listData)
     {
         this.context=context;
         this.listData=listData;
@@ -43,26 +43,27 @@ public class CustomListAdapterUser extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        ViewHolder holder;
+        CustomListAdapterChatBox.ViewHolder holder;
         if (convertView==null)
         {
-            convertView=layoutInflater.inflate(R.layout.adapter_friend, null);
-            holder=new ViewHolder();
+            convertView=layoutInflater.inflate(R.layout.adapter_chatbox, null);
+            holder=new CustomListAdapterChatBox.ViewHolder();
             holder.avatar=convertView.findViewById(R.id.avatar_friend);
             holder.online=convertView.findViewById(R.id.online);
             holder.nickName=convertView.findViewById(R.id.nickName_friend);
+            holder.message=convertView.findViewById(R.id.message_theEnd);
             convertView.setTag(holder);
         }
         else {
-            holder=(ViewHolder)convertView.getTag();
+            holder=(CustomListAdapterChatBox.ViewHolder)convertView.getTag();
         }
 
-        UserBasic userBasic=this.listData.get(position);
+        ChatBox chatBox=this.listData.get(position);
 
         //Set avatar by Url
-        Picasso.get().load(userBasic.getAvatar()).into(holder.avatar);
+        Picasso.get().load(chatBox.getAvatar()).into(holder.avatar);
 
-        if (userBasic.isOnline())
+        if (chatBox.isOnline())
         {
             holder.online.setVisibility(View.VISIBLE);
         }
@@ -70,7 +71,8 @@ public class CustomListAdapterUser extends BaseAdapter {
         {
             holder.online.setVisibility(View.INVISIBLE);
         }
-        holder.nickName.setText(userBasic.getNickName());
+        holder.nickName.setText(chatBox.getNickName());
+        holder.message.setText(chatBox.getMessage());
 
         return convertView;
     }
@@ -79,5 +81,6 @@ public class CustomListAdapterUser extends BaseAdapter {
         de.hdodenhof.circleimageview.CircleImageView avatar;
         de.hdodenhof.circleimageview.CircleImageView online;
         TextView nickName;
+        TextView message;
     }
 }

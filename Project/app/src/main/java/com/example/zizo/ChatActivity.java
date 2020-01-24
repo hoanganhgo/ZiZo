@@ -126,22 +126,6 @@ public class ChatActivity extends AppCompatActivity {
                         .push()
                         .setValue(newMess);
 
-//                FirebaseDatabase.getInstance().getReference().child("Joining").child(userName)
-//                        .child(nameCircle).addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        JoinModel joinModel = dataSnapshot.getValue(JoinModel.class);
-//                        joinModel.setLastMessage(newMess);
-//                        FirebaseDatabase.getInstance().getReference().child("Joining").child(userName)
-//                                .child(nameCircle).setValue(joinModel);
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                    }
-//                });
-
                 // Clear the input
                 input.setText("");
             }

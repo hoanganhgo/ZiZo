@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/avatar_poster"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/user"
+        app:civ_border_width="1dp"
+        app:civ_border_color="@color/sky"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5sp"
+        android:layout_marginBottom="5dp"/>
+
+    <TextView
+        android:id="@+id/nickName_poster"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nick name"
+        android:textSize="17sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_toRightOf="@id/avatar_poster"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:id="@+id/time_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="30 phút trước"
+        android:textSize="10sp"
+        android:layout_below="@+id/nickName_poster"
+        android:layout_toRightOf="@id/avatar_poster"
+        android:layout_marginStart="10dp"/>
+
+    <TextView
+        android:id="@+id/content_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chúc mừng năm mới"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:layout_below="@+id/avatar_poster"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"/>
+
+    <ImageView
+        android:id="@+id/image_post"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher_background"
+        android:layout_below="@+id/content_post"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"/>
+
+    <ImageButton
+        android:id="@+id/like_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pink_heart"
+        android:background="@color/transparent"
+        android:layout_below="@id/image_post"
+        android:layout_marginStart="15dp"/>
+
+    <ImageButton
+        android:id="@+id/comment_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/comment"
+        android:background="@color/transparent"
+        android:layout_below="@id/image_post"
+        android:layout_toRightOf="@id/like_status"
+        android:layout_marginStart="50dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@+id/like_status"
+        android:layout_marginTop="5dp"/>
+</RelativeLayout>

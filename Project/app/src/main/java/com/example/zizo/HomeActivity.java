@@ -3,6 +3,7 @@ package com.example.zizo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.zizo.fragment.ChatBoxFragment;
+import com.example.zizo.fragment.DiaryFragment;
 import com.example.zizo.fragment.FriendFragment;
 import com.example.zizo.fragment.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -24,6 +27,10 @@ public class HomeActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigation;
     private FirebaseAuth auth;
+    private ChatBoxFragment chatBoxFragment;
+    private FriendFragment friendFragment;
+    private DiaryFragment diaryFragment;
+    private ProfileFragment profileFragment;
 
     @Override
     protected void onCreate(Bundle saveInstanceState)
@@ -33,10 +40,16 @@ public class HomeActivity extends AppCompatActivity {
 
         auth=FirebaseAuth.getInstance();
 
+        //Khởi tạo các fragment
+        chatBoxFragment=new ChatBoxFragment();
+        friendFragment=new FriendFragment();
+        diaryFragment=new DiaryFragment();
+        profileFragment=new ProfileFragment();
+
         bottomNavigation=findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-        bottomNavigation.setSelectedItemId(R.id.navigation_home);
-        openFragment(ProfileFragment.newInstance("",""));
+        bottomNavigation.setSelectedItemId(R.id.navigation_diary);
+        openFragment(diaryFragment);
 
         //Tiến trình cập nhật thời gian thực
         Thread thread = new Thread() {
@@ -74,16 +87,16 @@ public class HomeActivity extends AppCompatActivity {
                 @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.navigation_chat:
-                            //openFragment(.newInstance("", ""));
+                            openFragment(chatBoxFragment);
                             return true;
                         case R.id.navigation_friends:
-                            openFragment(FriendFragment.newInstance("", ""));
+                            openFragment(friendFragment);
                             return true;
-                        case R.id.navigation_history:
-                            //openFragment(NotificationFragment.newInstance("", ""));
+                        case R.id.navigation_diary:
+                            openFragment(diaryFragment);
                             return true;
                         case R.id.navigation_home:
-                            openFragment(ProfileFragment.newInstance("", ""));
+                            openFragment(profileFragment);
                             return true;
                     }
                     return false;
