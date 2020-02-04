@@ -2,6 +2,7 @@ package com.example.zizo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
@@ -40,11 +41,16 @@ public class HomeActivity extends AppCompatActivity {
 
         auth=FirebaseAuth.getInstance();
 
+        //Lấy kích thước màn hình
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int widthPixels = displayMetrics.widthPixels;
+
         //Khởi tạo các fragment
         chatBoxFragment=new ChatBoxFragment();
         friendFragment=new FriendFragment();
-        diaryFragment=new DiaryFragment();
-        profileFragment=new ProfileFragment();
+        diaryFragment=new DiaryFragment(widthPixels);
+        profileFragment=new ProfileFragment(widthPixels);
 
         bottomNavigation=findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);

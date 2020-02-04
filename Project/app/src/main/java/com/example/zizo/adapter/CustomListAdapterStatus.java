@@ -1,6 +1,7 @@
 package com.example.zizo.adapter;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.view.WindowManager;
 
+import com.example.zizo.PostActivity;
 import com.example.zizo.R;
 import com.example.zizo.object.Status;
 import com.example.zizo.object.UserBasic;
@@ -18,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -25,12 +29,14 @@ import java.util.ArrayList;
 public class CustomListAdapterStatus extends BaseAdapter {
     private ArrayList<Status> listData;
     private LayoutInflater layoutInflater;
+    private int widthPixels;
     private Context context;
 
-    public CustomListAdapterStatus(Context context, ArrayList<Status> listData)
+    public CustomListAdapterStatus(Context context, ArrayList<Status> listData, int widthPixels)
     {
         this.context=context;
         this.listData=listData;
+        this.widthPixels=widthPixels;
         this.layoutInflater=LayoutInflater.from(context);
     }
     @Override
@@ -95,7 +101,18 @@ public class CustomListAdapterStatus extends BaseAdapter {
         });
 
         holder.content.setText(status.getContent());
-        Picasso.get().load(status.getImage()).into(holder.image);
+        Picasso.get().load(status.getImage()).into(holder.image, new Callback() {
+            @Override
+            public void onSuccess() {
+                PostActivity.scaleImage(holder.image, widthPixels);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+
         holder.time.setText(Long.toString(status.getDateTime()));
 
         holder.like.setOnClickListener(new View.OnClickListener() {

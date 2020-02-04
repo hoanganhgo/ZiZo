@@ -51,6 +51,12 @@ public class ProfileFragment extends Fragment {
     private Button btn_avatar;
     private ImageView avatar;
     private ListView lv_status;
+    private int widthPixels;
+
+    public ProfileFragment(int widthPixels)
+    {
+        this.widthPixels=widthPixels;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -137,7 +143,7 @@ public class ProfileFragment extends Fragment {
 
         status_list.add(status);
 
-        lv_status.setAdapter(new CustomListAdapterStatus(view.getContext(),status_list));
+        lv_status.setAdapter(new CustomListAdapterStatus(view.getContext(),status_list, widthPixels));
         return view;
     }
 

@@ -2,6 +2,7 @@ package com.example.zizo.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,13 @@ import com.example.zizo.PostActivity;
 import com.example.zizo.R;
 import com.example.zizo.adapter.CustomListAdapterStatus;
 import com.example.zizo.object.Status;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,6 +33,18 @@ public class DiaryFragment extends Fragment {
 
     private ListView lv_status;
     private Button btn_post;
+
+    private int sizeFriend=0;
+    private int countFriend=0;
+    private String myEmail=null;
+    private DatabaseReference myRef=null;
+    private DatabaseReference refStatus=null;
+    private int widthPixels;
+
+    public DiaryFragment(int widthPixels)
+    {
+        this.widthPixels=widthPixels;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,26 +59,18 @@ public class DiaryFragment extends Fragment {
 
         //Set ListView Status
         lv_status=(ListView)view.findViewById(R.id.diary);
-
-        ArrayList<Status> status_list=new ArrayList<Status>();
-        Log.e("test","start");
-
-        String email="hoang@zizo-com";
-        String content="Happy new year!";
-        String image="https://www.gannett-cdn.com/presto/2019/12/18/PGRE/4fa79f9a-8d51-4736-9035-c62452c34e4e-new_years.jpg?width=540&height=&fit=bounds&auto=webp";
-        long time=(new Date()).getTime();
-        Status status=new Status(email,content,image,time,null,null);
-
-        status_list.add(status);
-        status_list.add(status);
-        status_list.add(status);
-
-        lv_status.setAdapter(new CustomListAdapterStatus(view.getContext(),status_list));
-        Log.e("test","finish");
-
-
-        //set post button
         btn_post=view.findViewById(R.id.btn_post);
+
+        //Lấy thông tin user
+        FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
+        if (user!=null)
+        {
+            myEmail=user.getEmail().replace('.','-');
+        }
+
+        myRef= FirebaseDatabase.getInstance().getReference().child("User");
+        refStatus=FirebaseDatabase.getInstance().getReference("Status");
+
         btn_post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,5 +79,91 @@ public class DiaryFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        final ArrayList<Status> status_list=new ArrayList<Status>();
+        Log.e("test","start");
+
+        //add my status
+        refStatus.child(myEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                {
+                    for (DataSnapshot item: dataSnapshot.getChildren()) {
+                        String email=myEmail;
+                        String content=item.child("content").getValue().toString();
+                        String image = item.child("image").getValue().toString();
+                        long time=Long.parseLong(item.child("dateTime").getValue().toString());
+                        Status status=new Status(email,content,image,time,null,null);
+
+                        status_list.add(status);
+                        Log.e("test",image);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        myRef.child(myEmail).child("friends").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot item: dataSnapshot.getChildren()) {
+                    final String friend=item.getValue().toString();
+                    Log.e("test",friend);
+                    sizeFriend++;
+                    refStatus.child(friend).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                             if (dataSnapshot.exists())
+                             {
+                                for (DataSnapshot item: dataSnapshot.getChildren()) {
+                                    String email=friend;
+                                    String content=item.child("content").getValue().toString();
+                                    String image = item.child("image").getValue().toString();
+                                    long time=Long.parseLong(item.child("dateTime").getValue().toString());
+                                    Status status=new Status(email,content,image,time,null,null);
+
+                                    status_list.add(status);
+                                    Log.e("test",image);
+                                }
+                             }
+
+                             countFriend++;
+                             if (countFriend==sizeFriend)
+                             {
+                                 String email="";
+                                 String content="";
+                                 String image ="https://firebasestorage.googleapis.com/v0/b/zizo-9fdb5.appspot.com/o/images%2FtheEnd.png?alt=media&token=de8146f9-b3ef-4f18-8b77-a5d4b481f5a1";
+                                 long time=0;
+                                 Status status=new Status(email,content,image,time,null,null);
+
+                                 status_list.add(status);
+                                 lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, widthPixels));
+                                 Log.e("test","finish");
+                             }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
