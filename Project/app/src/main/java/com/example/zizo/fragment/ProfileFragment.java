@@ -36,6 +36,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Stack;
 
 public class ProfileFragment extends Fragment {
 
@@ -44,6 +45,7 @@ public class ProfileFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private DatabaseReference myRef;
+    private DatabaseReference refStatus;
     private StorageReference mStorageRef;
     private Uri fileUri;
     private String filePath;
@@ -133,17 +135,47 @@ public class ProfileFragment extends Fragment {
         //Set ListView Status
         lv_status=(ListView)view.findViewById(R.id.my_status_list);
 
-        ArrayList<Status> status_list=new ArrayList<Status>();
+        final ArrayList<Status> status_list=new ArrayList<Status>();
+        //add my status
+        refStatus=FirebaseDatabase.getInstance().getReference("Status");
+        refStatus.child(myEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                {
+                    Stack<Status> stack =new Stack<Status>();
+                    for (DataSnapshot item: dataSnapshot.getChildren()) {
+                        String email=myEmail;
+                        String content=item.child("content").getValue().toString();
+                        String image = item.child("image").getValue().toString();
+                        long time=Long.parseLong(item.child("dateTime").getValue().toString());
+                        Status status=new Status(email,content,image,time,null,null);
 
-        String email="hoang@zizo-com";
-        String content="Happy new year!";
-        String image="https://www.gannett-cdn.com/presto/2019/12/18/PGRE/4fa79f9a-8d51-4736-9035-c62452c34e4e-new_years.jpg?width=540&height=&fit=bounds&auto=webp";
-        long time=(new Date()).getTime();
-        Status status=new Status(email,content,image,time,null,null);
+                        stack.push(status);
+                    }
 
-        status_list.add(status);
+                    while (!stack.isEmpty())
+                    {
+                        status_list.add(stack.pop());
+                    }
 
-        lv_status.setAdapter(new CustomListAdapterStatus(view.getContext(),status_list, widthPixels));
+                    String email="";
+                    String content="";
+                    String image ="https://firebasestorage.googleapis.com/v0/b/zizo-9fdb5.appspot.com/o/images%2FtheEnd.png?alt=media&token=de8146f9-b3ef-4f18-8b77-a5d4b481f5a1";
+                    long time=0;
+                    Status status=new Status(email,content,image,time,null,null);
+
+                    status_list.add(status);
+                    lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, widthPixels, myEmail));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         return view;
     }
 

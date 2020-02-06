@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 public class DiaryFragment extends Fragment {
@@ -140,6 +141,8 @@ public class DiaryFragment extends Fragment {
                              countFriend++;
                              if (countFriend==sizeFriend)
                              {
+                                 sortStatus(status_list);
+
                                  String email="";
                                  String content="";
                                  String image ="https://firebasestorage.googleapis.com/v0/b/zizo-9fdb5.appspot.com/o/images%2FtheEnd.png?alt=media&token=de8146f9-b3ef-4f18-8b77-a5d4b481f5a1";
@@ -147,7 +150,7 @@ public class DiaryFragment extends Fragment {
                                  Status status=new Status(email,content,image,time,null,null);
 
                                  status_list.add(status);
-                                 lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, widthPixels));
+                                 lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, widthPixels, myEmail));
                                  Log.e("test","finish");
                              }
                         }
@@ -165,5 +168,30 @@ public class DiaryFragment extends Fragment {
 
             }
         });
+    }
+
+    private void sortStatus(ArrayList<Status> list)
+    {
+        int n=list.size();
+
+        for (int i=0;i<n-1;i++)
+        {
+            int max=i;
+
+            for (int j=i+1;j<n;j++)
+            {
+                if (list.get(j).getDateTime()>list.get(i).getDateTime())
+                {
+                    max=j;
+                }
+            }
+
+            if (max!=i)
+            {
+                Status temp=list.get(max);
+                list.set(max, list.get(i));
+                list.set(i, temp);
+            }
+        }
     }
 }

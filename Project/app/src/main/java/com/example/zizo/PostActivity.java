@@ -82,9 +82,9 @@ public class PostActivity extends AppCompatActivity {
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("test",email);
-                Log.e("test",urlImage);
-                Log.e("test",editContent.getText().toString());
+                //Log.e("test",email);
+               // Log.e("test",urlImage);
+                //Log.e("test",editContent.getText().toString());
 
                 String content=editContent.getText().toString();
                 long dateTime=(new Date()).getTime();
@@ -169,11 +169,11 @@ public class PostActivity extends AppCompatActivity {
         // Get current dimensions
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
-        Log.e("test", "w:"+width+"  h:"+height);
+        //Log.e("test", "w:"+width+"  h:"+height);
 
         float scale=(float) widthPixels/width;
         float h=height*scale;
-        Log.e("test", "h:"+h);
+        //Log.e("test", "h:"+h);
         int hImage=(int)h;
 
         imageView.getLayoutParams().width=ViewGroup.LayoutParams.MATCH_PARENT;

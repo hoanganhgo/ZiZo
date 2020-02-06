@@ -160,7 +160,7 @@ public class ChatActivity extends AppCompatActivity {
 
                     textFriend.setText(model.getContent());
                     // Format the date before showing it
-                    timeFriend.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)",
+                    timeFriend.setText(DateFormat.format("dd-MM-yyyy (HH:mm)",
                             model.getTime()));
 
                     avatarSender.setVisibility(View.INVISIBLE);

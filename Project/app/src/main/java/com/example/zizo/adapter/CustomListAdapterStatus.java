@@ -1,6 +1,7 @@
 package com.example.zizo.adapter;
 
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.WindowManager;
+
+import androidx.annotation.NonNull;
 
 import com.example.zizo.PostActivity;
 import com.example.zizo.R;
@@ -25,18 +28,21 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CustomListAdapterStatus extends BaseAdapter {
     private ArrayList<Status> listData;
     private LayoutInflater layoutInflater;
     private int widthPixels;
+    private String myEmail;
     private Context context;
 
-    public CustomListAdapterStatus(Context context, ArrayList<Status> listData, int widthPixels)
+    public CustomListAdapterStatus(Context context, ArrayList<Status> listData, int widthPixels, String myEmail)
     {
         this.context=context;
         this.listData=listData;
         this.widthPixels=widthPixels;
+        this.myEmail=myEmail;
         this.layoutInflater=LayoutInflater.from(context);
     }
     @Override
@@ -77,7 +83,7 @@ public class CustomListAdapterStatus extends BaseAdapter {
             holder=(CustomListAdapterStatus.ViewHolder)convertView.getTag();
         }
 
-        Status status=this.listData.get(position);
+        final Status status=this.listData.get(position);
 
         //lấy avatar và nickname từ email
         DatabaseReference myRef= FirebaseDatabase.getInstance().getReference("User").child(status.getEmail());
@@ -88,8 +94,8 @@ public class CustomListAdapterStatus extends BaseAdapter {
 
                 String avatar = dataSnapshot.child("avatar").getValue(String.class);
                 String nickName=dataSnapshot.child("nickName").getValue(String.class);
-                Log.d("test123", "Value is: " + avatar);
-                Log.d("test123", "Value is: " + nickName);
+                //Log.d("test123", "Value is: " + avatar);
+                //Log.d("test123", "Value is: " + nickName);
                 holder.nickName.setText(nickName);
                 Picasso.get().load(avatar).into(holder.avatar);
             }
@@ -113,12 +119,82 @@ public class CustomListAdapterStatus extends BaseAdapter {
             }
         });
 
-        holder.time.setText(Long.toString(status.getDateTime()));
+        long time=status.getDateTime();
+        holder.time.setText(DateFormat.format("dd/MM/yyyy - HH:mm", time));
 
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.e("test", "Like"+position);
+                if (holder.like.getTag()==null)
+                {
+                    holder.like.setTag(Boolean.FALSE);
+                }
+                if (!((Boolean) holder.like.getTag()))
+                {
+                    holder.like.setBackgroundResource(R.drawable.pink_heart);
+                    holder.like.setTag(Boolean.TRUE);
+
+                    FirebaseDatabase.getInstance().getReference("Status").child(status.getEmail())
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot item : dataSnapshot.getChildren())
+                                    {
+                                        if (Long.parseLong(item.child("dateTime").getValue().toString())==status.getDateTime())
+                                        {
+                                            Log.e("test", "LIKE: "+item.child("content").getValue());
+                                            item.getRef().child("like").push().setValue(myEmail);
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                }else{
+                    holder.like.setBackgroundResource(R.drawable.heart);
+                    holder.like.setTag(Boolean.FALSE);
+
+                    FirebaseDatabase.getInstance().getReference("Status").child(status.getEmail())
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot item : dataSnapshot.getChildren())
+                                    {
+                                        if (Long.parseLong(item.child("dateTime").getValue().toString())==status.getDateTime())
+                                        {
+                                            Log.e("test", "DISLIKE: "+item.child("content").getValue());
+                                            item.getRef().child("like").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                    for (DataSnapshot item : dataSnapshot.getChildren())
+                                                    {
+                                                        if (item.getValue().toString().contentEquals(myEmail))
+                                                        {
+                                                            item.getRef().removeValue();
+                                                        }
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                }
+
             }
         });
 
