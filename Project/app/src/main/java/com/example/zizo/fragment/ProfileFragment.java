@@ -51,6 +51,7 @@ public class ProfileFragment extends Fragment {
     private String filePath;
     private TextView nickName;
     private Button btn_avatar;
+    private TextView sumLikes;
     private ImageView avatar;
     private ListView lv_status;
     private int widthPixels;
@@ -74,6 +75,7 @@ public class ProfileFragment extends Fragment {
         nickName=view.findViewById(R.id.nickName);
         btn_avatar=view.findViewById(R.id.btn_avatar);
         avatar=view.findViewById(R.id.avatar);
+        sumLikes=view.findViewById(R.id.sumLikes);
 
         //Lấy thông tin user
         FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
@@ -143,15 +145,23 @@ public class ProfileFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists())
                 {
+                    int sum=0;
                     Stack<Status> stack =new Stack<Status>();
                     for (DataSnapshot item: dataSnapshot.getChildren()) {
                         String email=myEmail;
                         String content=item.child("content").getValue().toString();
                         String image = item.child("image").getValue().toString();
+                        ArrayList<String> likes=new ArrayList<>();
+                        for (DataSnapshot like: item.child("likes").getChildren())
+                        {
+                            likes.add(like.getValue().toString());
+                            //Log.e("test", like.getValue().toString());
+                        }
                         long time=Long.parseLong(item.child("dateTime").getValue().toString());
-                        Status status=new Status(email,content,image,time,null,null);
+                        Status status=new Status(email,content,image,time,likes,null);
 
                         stack.push(status);
+                        sum+=likes.size();
                     }
 
                     while (!stack.isEmpty())
@@ -159,6 +169,10 @@ public class ProfileFragment extends Fragment {
                         status_list.add(stack.pop());
                     }
 
+                    //hiển thị tổng số like
+                    sumLikes.setText(Integer.toString(sum));
+
+                    //Gán 1 status rỗng
                     String email="";
                     String content="";
                     String image ="https://firebasestorage.googleapis.com/v0/b/zizo-9fdb5.appspot.com/o/images%2FtheEnd.png?alt=media&token=de8146f9-b3ef-4f18-8b77-a5d4b481f5a1";

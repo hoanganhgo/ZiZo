@@ -38,26 +38,28 @@
         android:layout_below="@+id/avatar"
         android:layout_marginTop="5dp"/>
 
-    <Button
-        android:id="@+id/addFriend"
+    <ImageView
+        android:id="@+id/imageSumLikes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Kết bạn"
-        android:textColor="@color/blue"
-        android:background="@drawable/background_button_1"
-        android:layout_marginStart="20dp"
-        android:layout_below="@+id/nickName"/>
+        android:src="@drawable/pink_heart"
+        android:layout_below="@+id/nickName"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20sp"/>
 
-    <Button
-        android:id="@+id/addFollow"
+    <TextView
+        android:id="@+id/sumLikes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Theo dõi"
-        android:textColor="@color/blue"
-        android:background="@drawable/background_button_1"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="20dp"
-        android:layout_below="@+id/nickName" />
+        android:text="0"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:src="@drawable/pink_heart"
+        android:layout_below="@+id/nickName"
+        android:layout_toEndOf="@+id/imageSumLikes"
+        android:layout_marginTop="13dp"
+        android:layout_marginStart="7sp"/>
+
 
     <ListView
         android:id="@+id/my_status_list"

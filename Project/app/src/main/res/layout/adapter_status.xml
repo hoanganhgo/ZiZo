@@ -65,6 +65,18 @@
         android:layout_below="@id/image_post"
         android:layout_marginStart="15dp"/>
 
+    <TextView
+        android:id="@+id/amount_of_likes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_below="@+id/image_post"
+        android:layout_toEndOf="@id/like_status"/>
+
     <ImageButton
         android:id="@+id/comment_status"
         android:layout_width="wrap_content"
@@ -73,7 +85,19 @@
         android:background="@color/transparent"
         android:layout_below="@id/image_post"
         android:layout_toRightOf="@id/like_status"
-        android:layout_marginStart="50dp"/>
+        android:layout_marginStart="55dp"/>
+
+    <TextView
+        android:id="@+id/amount_of_comments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_below="@+id/image_post"
+        android:layout_toEndOf="@id/comment_status"/>
 
     <View
         android:layout_width="match_parent"

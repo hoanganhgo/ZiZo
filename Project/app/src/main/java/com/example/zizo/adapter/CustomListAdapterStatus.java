@@ -75,7 +75,9 @@ public class CustomListAdapterStatus extends BaseAdapter {
             holder.content=convertView.findViewById(R.id.content_post);
             holder.image=convertView.findViewById(R.id.image_post);
             holder.like=convertView.findViewById(R.id.like_status);
+            holder.amountOfLikes=convertView.findViewById(R.id.amount_of_likes);
             holder.comment=convertView.findViewById(R.id.comment_status);
+            holder.amountOfComments=convertView.findViewById(R.id.amount_of_comments);
 
             convertView.setTag(holder);
         }
@@ -84,6 +86,35 @@ public class CustomListAdapterStatus extends BaseAdapter {
         }
 
         final Status status=this.listData.get(position);
+        final int[] sumOfLikes = {0};
+
+        //Kiểm tra xem status đã được like chưa
+        if (status.getLikes()!=null)
+        {
+            Boolean liked=false;
+            for (String item : status.getLikes())
+            {
+                if (myEmail.contentEquals(item))
+                {
+                    liked=true;
+                }
+            }
+
+            if (liked)
+            {
+                holder.like.setTag(Boolean.TRUE);
+                holder.like.setBackgroundResource(R.drawable.pink_heart);
+            }
+            else{
+                holder.like.setTag(Boolean.FALSE);
+            }
+            sumOfLikes[0]=status.getLikes().size();
+            holder.amountOfLikes.setText(Integer.toString(sumOfLikes[0]));
+        }else{
+            holder.like.setTag(Boolean.FALSE);
+            holder.amountOfLikes.setText("0");
+        }
+
 
         //lấy avatar và nickname từ email
         DatabaseReference myRef= FirebaseDatabase.getInstance().getReference("User").child(status.getEmail());
@@ -126,14 +157,12 @@ public class CustomListAdapterStatus extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Log.e("test", "Like"+position);
-                if (holder.like.getTag()==null)
-                {
-                    holder.like.setTag(Boolean.FALSE);
-                }
+
                 if (!((Boolean) holder.like.getTag()))
                 {
                     holder.like.setBackgroundResource(R.drawable.pink_heart);
                     holder.like.setTag(Boolean.TRUE);
+                    holder.amountOfLikes.setText(Integer.toString(++sumOfLikes[0]));
 
                     FirebaseDatabase.getInstance().getReference("Status").child(status.getEmail())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -144,7 +173,7 @@ public class CustomListAdapterStatus extends BaseAdapter {
                                         if (Long.parseLong(item.child("dateTime").getValue().toString())==status.getDateTime())
                                         {
                                             Log.e("test", "LIKE: "+item.child("content").getValue());
-                                            item.getRef().child("like").push().setValue(myEmail);
+                                            item.getRef().child("likes").push().setValue(myEmail);
                                         }
                                     }
                                 }
@@ -157,6 +186,7 @@ public class CustomListAdapterStatus extends BaseAdapter {
                 }else{
                     holder.like.setBackgroundResource(R.drawable.heart);
                     holder.like.setTag(Boolean.FALSE);
+                    holder.amountOfLikes.setText(Integer.toString(--sumOfLikes[0]));
 
                     FirebaseDatabase.getInstance().getReference("Status").child(status.getEmail())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -167,7 +197,7 @@ public class CustomListAdapterStatus extends BaseAdapter {
                                         if (Long.parseLong(item.child("dateTime").getValue().toString())==status.getDateTime())
                                         {
                                             Log.e("test", "DISLIKE: "+item.child("content").getValue());
-                                            item.getRef().child("like").addListenerForSingleValueEvent(new ValueEventListener() {
+                                            item.getRef().child("likes").addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                     for (DataSnapshot item : dataSnapshot.getChildren())
@@ -209,6 +239,8 @@ public class CustomListAdapterStatus extends BaseAdapter {
         ImageView image;
         TextView time;
         ImageButton like;
+        TextView amountOfLikes;
         ImageButton comment;
+        TextView amountOfComments;
     }
 }

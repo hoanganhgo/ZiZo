@@ -99,8 +99,14 @@ public class DiaryFragment extends Fragment {
                         String email=myEmail;
                         String content=item.child("content").getValue().toString();
                         String image = item.child("image").getValue().toString();
+                        ArrayList<String> likes=new ArrayList<>();
+                        for (DataSnapshot like: item.child("likes").getChildren())
+                        {
+                            likes.add(like.getValue().toString());
+                            //Log.e("test", like.getValue().toString());
+                        }
                         long time=Long.parseLong(item.child("dateTime").getValue().toString());
-                        Status status=new Status(email,content,image,time,null,null);
+                        Status status=new Status(email,content,image,time,likes,null);
 
                         status_list.add(status);
                         Log.e("test",image);
@@ -130,8 +136,14 @@ public class DiaryFragment extends Fragment {
                                     String email=friend;
                                     String content=item.child("content").getValue().toString();
                                     String image = item.child("image").getValue().toString();
+                                    ArrayList<String> likes=new ArrayList<>();
+                                    for (DataSnapshot like: item.child("likes").getChildren())
+                                    {
+                                        likes.add(like.getValue().toString());
+                                        //Log.e("test", like.getValue().toString());
+                                    }
                                     long time=Long.parseLong(item.child("dateTime").getValue().toString());
-                                    Status status=new Status(email,content,image,time,null,null);
+                                    Status status=new Status(email,content,image,time,likes,null);
 
                                     status_list.add(status);
                                     Log.e("test",image);
