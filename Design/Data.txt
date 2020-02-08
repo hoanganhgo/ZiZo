@@ -3,7 +3,7 @@
 *Status.
 - id, email, image, content, dateTime, likes (array), comments (array comment).
 * Comment.
-- email, content.
+- email, time, content.
 * ChatBox. (key: username1+username2)
 - messages (array message).
 * Message.

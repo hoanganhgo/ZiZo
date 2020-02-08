@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Date;
 
 public class HomeActivity extends AppCompatActivity {
+    public static int widthPixels=0;
 
     BottomNavigationView bottomNavigation;
     private FirebaseAuth auth;
@@ -44,13 +45,13 @@ public class HomeActivity extends AppCompatActivity {
         //Lấy kích thước màn hình
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int widthPixels = displayMetrics.widthPixels;
+        widthPixels = displayMetrics.widthPixels;
 
         //Khởi tạo các fragment
         chatBoxFragment=new ChatBoxFragment();
         friendFragment=new FriendFragment();
-        diaryFragment=new DiaryFragment(widthPixels);
-        profileFragment=new ProfileFragment(widthPixels);
+        diaryFragment=new DiaryFragment();
+        profileFragment=new ProfileFragment();
 
         bottomNavigation=findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);

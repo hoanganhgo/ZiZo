@@ -54,11 +54,76 @@
         android:text="0"
         android:textSize="18sp"
         android:textColor="@color/black"
-        android:src="@drawable/pink_heart"
         android:layout_below="@+id/nickName"
         android:layout_toEndOf="@+id/imageSumLikes"
         android:layout_marginTop="13dp"
         android:layout_marginStart="7sp"/>
+
+    <ImageView
+        android:id="@+id/imageSumComments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/comment"
+        android:layout_below="@+id/nickName"
+        android:layout_toRightOf="@id/imageSumLikes"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="30sp"/>
+
+    <TextView
+        android:id="@+id/sumComments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:layout_below="@+id/nickName"
+        android:layout_toEndOf="@+id/imageSumComments"
+        android:layout_marginTop="13dp"
+        android:layout_marginStart="7sp"/>
+
+    <ImageView
+        android:id="@+id/imageSumFriends"
+        android:layout_width="32sp"
+        android:layout_height="32sp"
+        android:src="@drawable/friendship"
+        android:layout_below="@+id/nickName"
+        android:layout_toLeftOf="@+id/sumFriends"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="7sp"/>
+
+    <TextView
+        android:id="@+id/sumFriends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:layout_below="@+id/nickName"
+        android:layout_toLeftOf="@+id/imageSumFollows"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="20sp"/>
+
+    <ImageView
+        android:id="@+id/imageSumFollows"
+        android:layout_width="32sp"
+        android:layout_height="32sp"
+        android:src="@drawable/follow"
+        android:layout_below="@+id/nickName"
+        android:layout_toLeftOf="@id/sumFollows"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="7sp"/>
+
+    <TextView
+        android:id="@+id/sumFollows"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:layout_below="@+id/nickName"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="20dp"/>
 
 
     <ListView

@@ -1,6 +1,7 @@
 package com.example.zizo.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -15,6 +16,8 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 
+import com.example.zizo.CommentActivity;
+import com.example.zizo.HomeActivity;
 import com.example.zizo.PostActivity;
 import com.example.zizo.R;
 import com.example.zizo.object.Status;
@@ -33,15 +36,13 @@ import java.util.Date;
 public class CustomListAdapterStatus extends BaseAdapter {
     private ArrayList<Status> listData;
     private LayoutInflater layoutInflater;
-    private int widthPixels;
     private String myEmail;
     private Context context;
 
-    public CustomListAdapterStatus(Context context, ArrayList<Status> listData, int widthPixels, String myEmail)
+    public CustomListAdapterStatus(Context context, ArrayList<Status> listData, String myEmail)
     {
         this.context=context;
         this.listData=listData;
-        this.widthPixels=widthPixels;
         this.myEmail=myEmail;
         this.layoutInflater=LayoutInflater.from(context);
     }
@@ -87,6 +88,13 @@ public class CustomListAdapterStatus extends BaseAdapter {
 
         final Status status=this.listData.get(position);
         final int[] sumOfLikes = {0};
+        final int[] sumOfComments={0};
+
+        if (status.getComments()!=null)
+        {
+            sumOfComments[0]=status.getComments().size();
+        }
+        holder.amountOfComments.setText(Integer.toString(sumOfComments[0]));
 
         //Kiểm tra xem status đã được like chưa
         if (status.getLikes()!=null)
@@ -141,7 +149,7 @@ public class CustomListAdapterStatus extends BaseAdapter {
         Picasso.get().load(status.getImage()).into(holder.image, new Callback() {
             @Override
             public void onSuccess() {
-                PostActivity.scaleImage(holder.image, widthPixels);
+                PostActivity.scaleImage(holder.image, HomeActivity.widthPixels);
             }
 
             @Override
@@ -224,6 +232,40 @@ public class CustomListAdapterStatus extends BaseAdapter {
                                 }
                             });
                 }
+
+            }
+        });
+
+        holder.comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent intent=new Intent(context, CommentActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("myEmail",myEmail);
+                intent.putExtra("likes",sumOfLikes[0]);
+                intent.putExtra("comments",sumOfComments[0]);
+                FirebaseDatabase.getInstance().getReference("Status").child(status.getEmail())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot item : dataSnapshot.getChildren())
+                                {
+                                    if (Long.parseLong(item.child("dateTime").getValue().toString())==status.getDateTime())
+                                    {
+                                        //Log.e("test",item.getRef().toString());
+                                        String ref=item.getRef().toString().substring(34);
+                                        ref=ref.replaceAll("%40","@");
+                                        intent.putExtra("refStatus", ref);
+                                        context.startActivity(intent);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
 
             }
         });

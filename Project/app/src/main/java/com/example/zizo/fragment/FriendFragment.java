@@ -63,6 +63,7 @@ public class FriendFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(v.getContext(), SearchActivity.class);
+                intent.putExtra("myEmail",myEmail);
                 startActivity(intent);
             }
         });
@@ -72,11 +73,11 @@ public class FriendFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(v.getContext(), InvitationActivity.class);
+                intent.putExtra("myEmail",myEmail);
                 startActivity(intent);
             }
         });
 
-        //get My Email
         //Lấy thông tin user
         FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
         if (user!=null)

@@ -5,12 +5,21 @@ public class UserBasic {
     private String avatar;
     private boolean online;
     private String nickName;
+    private String email;
 
     public UserBasic(String avatar, boolean online, String nickName)
     {
         this.avatar=avatar;
         this.online=online;
         this.nickName=nickName;
+    }
+
+    public UserBasic(String email, String avatar, String nickName)
+    {
+        this.email=email;
+        this.avatar=avatar;
+        this.nickName=nickName;
+        this.online=false;
     }
 
 

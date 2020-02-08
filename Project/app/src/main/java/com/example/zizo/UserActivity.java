@@ -1,16 +1,23 @@
 package com.example.zizo;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.sip.SipSession;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.zizo.adapter.CustomListAdapterStatus;
+import com.example.zizo.object.Comment;
+import com.example.zizo.object.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -18,18 +25,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Stack;
 
 public class UserActivity extends AppCompatActivity {
 
     private DatabaseReference myRef=null;
     private DatabaseReference otherRef=null;
+    private DatabaseReference refStatus=null;
 
-    TextView nickName;
-    Button addFriend;
-    Button addFollow;
+    private de.hdodenhof.circleimageview.CircleImageView avatar;
+    private TextView nickName;
+    private Button addFriend;
+    private Button addFollow;
+    private ListView lv_status;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +50,7 @@ public class UserActivity extends AppCompatActivity {
         //Lấy thông tin đăng nhập
         FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
 
+        avatar=(de.hdodenhof.circleimageview.CircleImageView)findViewById(R.id.avatarUser);
         nickName=(TextView)findViewById(R.id.nickName);
         addFriend=(Button)findViewById(R.id.addFriend);
         addFollow=(Button)findViewById(R.id.addFollow);
@@ -58,6 +71,23 @@ public class UserActivity extends AppCompatActivity {
             otherRef=database.getReference("User").child(email);
         }
         final String finalMyEmail = myEmail;
+
+        //Set avatar and nick name
+        otherRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String refAvatar=dataSnapshot.child("avatar").getValue(String.class);
+                String name=dataSnapshot.child("nickName").getValue(String.class);
+
+                Picasso.get().load(refAvatar).into(avatar);
+                nickName.setText(name);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         //Kiểm tra tình trạng bạn bè, theo dõi
         if (myRef!=null)
@@ -161,6 +191,63 @@ public class UserActivity extends AppCompatActivity {
             }
         });
 
+        //Set ListView Status
+        lv_status=(ListView)findViewById(R.id.status_list);
+
+        final ArrayList<Status> status_list=new ArrayList<Status>();
+        //add my status
+        refStatus=FirebaseDatabase.getInstance().getReference("Status");
+        refStatus.child(email).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                {
+                    Stack<Status> stack =new Stack<Status>();
+                    for (DataSnapshot item: dataSnapshot.getChildren()) {
+                        String content=item.child("content").getValue().toString();
+                        String image = item.child("image").getValue().toString();
+
+                        ArrayList<String> likes=new ArrayList<>();
+                        for (DataSnapshot like: item.child("likes").getChildren())
+                        {
+                            likes.add(like.getValue().toString());
+                            //Log.e("test", like.getValue().toString());
+                        }
+
+                        ArrayList<Comment> comments=new ArrayList<>();
+                        for (DataSnapshot comment : item.child("comments").getChildren())
+                        {
+                            comments.add(comment.getValue(Comment.class));
+                        }
+
+                        long time=Long.parseLong(item.child("dateTime").getValue().toString());
+                        Status status=new Status(email,content,image,time,likes,comments);
+
+                        stack.push(status);
+                    }
+
+                    while (!stack.isEmpty())
+                    {
+                        status_list.add(stack.pop());
+                    }
+
+                    //Gán 1 status rỗng
+                    String email="";
+                    String content="";
+                    String image ="https://firebasestorage.googleapis.com/v0/b/zizo-9fdb5.appspot.com/o/images%2FtheEnd.png?alt=media&token=de8146f9-b3ef-4f18-8b77-a5d4b481f5a1";
+                    long time=0;
+                    Status status=new Status(email,content,image,time,null,null);
+
+                    status_list.add(status);
+                    lv_status.setAdapter(new CustomListAdapterStatus(getApplication(),status_list, finalMyEmail));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 

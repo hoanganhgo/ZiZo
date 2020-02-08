@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.example.zizo.PostActivity;
 import com.example.zizo.R;
 import com.example.zizo.adapter.CustomListAdapterStatus;
+import com.example.zizo.object.Comment;
 import com.example.zizo.object.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,11 +42,6 @@ public class DiaryFragment extends Fragment {
     private DatabaseReference myRef=null;
     private DatabaseReference refStatus=null;
     private int widthPixels;
-
-    public DiaryFragment(int widthPixels)
-    {
-        this.widthPixels=widthPixels;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,17 +95,25 @@ public class DiaryFragment extends Fragment {
                         String email=myEmail;
                         String content=item.child("content").getValue().toString();
                         String image = item.child("image").getValue().toString();
+
                         ArrayList<String> likes=new ArrayList<>();
                         for (DataSnapshot like: item.child("likes").getChildren())
                         {
                             likes.add(like.getValue().toString());
                             //Log.e("test", like.getValue().toString());
                         }
+
+                        ArrayList<Comment> comments=new ArrayList<>();
+                        for (DataSnapshot comment : item.child("comments").getChildren())
+                        {
+                            comments.add(comment.getValue(Comment.class));
+                        }
+
                         long time=Long.parseLong(item.child("dateTime").getValue().toString());
-                        Status status=new Status(email,content,image,time,likes,null);
+                        Status status=new Status(email,content,image,time,likes,comments);
 
                         status_list.add(status);
-                        Log.e("test",image);
+                        //Log.e("test",image);
                     }
                 }
             }
@@ -125,7 +129,7 @@ public class DiaryFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot item: dataSnapshot.getChildren()) {
                     final String friend=item.getValue().toString();
-                    Log.e("test",friend);
+                    //Log.e("test",friend);
                     sizeFriend++;
                     refStatus.child(friend).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -136,17 +140,25 @@ public class DiaryFragment extends Fragment {
                                     String email=friend;
                                     String content=item.child("content").getValue().toString();
                                     String image = item.child("image").getValue().toString();
+
                                     ArrayList<String> likes=new ArrayList<>();
                                     for (DataSnapshot like: item.child("likes").getChildren())
                                     {
                                         likes.add(like.getValue().toString());
                                         //Log.e("test", like.getValue().toString());
                                     }
+
+                                    ArrayList<Comment> comments=new ArrayList<>();
+                                    for (DataSnapshot comment : item.child("comments").getChildren())
+                                    {
+                                        comments.add(comment.getValue(Comment.class));
+                                    }
+
                                     long time=Long.parseLong(item.child("dateTime").getValue().toString());
-                                    Status status=new Status(email,content,image,time,likes,null);
+                                    Status status=new Status(email,content,image,time,likes,comments);
 
                                     status_list.add(status);
-                                    Log.e("test",image);
+                                    //Log.e("test",image);
                                 }
                              }
 
@@ -162,7 +174,7 @@ public class DiaryFragment extends Fragment {
                                  Status status=new Status(email,content,image,time,null,null);
 
                                  status_list.add(status);
-                                 lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, widthPixels, myEmail));
+                                 lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, myEmail));
                                  Log.e("test","finish");
                              }
                         }

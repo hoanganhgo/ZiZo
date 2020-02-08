@@ -26,6 +26,7 @@
         <activity android:name=".InvitationActivity"/>
         <activity android:name=".ChatActivity"/>
         <activity android:name=".PostActivity"/>
+        <activity android:name=".CommentActivity"/>
     </application>
 
 </manifest>

@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.zizo.R;
 import com.example.zizo.adapter.CustomListAdapterStatus;
+import com.example.zizo.object.Comment;
 import com.example.zizo.object.Status;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -52,14 +53,11 @@ public class ProfileFragment extends Fragment {
     private TextView nickName;
     private Button btn_avatar;
     private TextView sumLikes;
+    private TextView sumComments;
+    private TextView sumFriends;
+    private TextView sumFollows;
     private ImageView avatar;
     private ListView lv_status;
-    private int widthPixels;
-
-    public ProfileFragment(int widthPixels)
-    {
-        this.widthPixels=widthPixels;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,6 +74,10 @@ public class ProfileFragment extends Fragment {
         btn_avatar=view.findViewById(R.id.btn_avatar);
         avatar=view.findViewById(R.id.avatar);
         sumLikes=view.findViewById(R.id.sumLikes);
+        sumComments=view.findViewById(R.id.sumComments);
+        sumFriends=view.findViewById(R.id.sumFriends);
+        sumFollows=view.findViewById(R.id.sumFollows);
+
 
         //Lấy thông tin user
         FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
@@ -94,6 +96,22 @@ public class ProfileFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String nickname=dataSnapshot.child("nickName").getValue().toString();
                 nickName.setText(nickname);
+
+                if (dataSnapshot.child("friends").exists())
+                {
+                    long sum_friends=dataSnapshot.child("friends").getChildrenCount();
+                    sumFriends.setText(Long.toString(sum_friends));
+                }else{
+                    sumFriends.setText("0");
+                }
+
+                if (dataSnapshot.child("follows").exists())
+                {
+                    long sum_follows=dataSnapshot.child("follows").getChildrenCount();
+                    sumFollows.setText(Long.toString(sum_follows));
+                }else{
+                    sumFollows.setText("0");
+                }
             }
 
             @Override
@@ -145,23 +163,33 @@ public class ProfileFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists())
                 {
-                    int sum=0;
+                    int sum_likes=0;
+                    int sum_comments=0;
                     Stack<Status> stack =new Stack<Status>();
                     for (DataSnapshot item: dataSnapshot.getChildren()) {
                         String email=myEmail;
                         String content=item.child("content").getValue().toString();
                         String image = item.child("image").getValue().toString();
+
                         ArrayList<String> likes=new ArrayList<>();
                         for (DataSnapshot like: item.child("likes").getChildren())
                         {
                             likes.add(like.getValue().toString());
                             //Log.e("test", like.getValue().toString());
                         }
+
+                        ArrayList<Comment> comments=new ArrayList<>();
+                        for (DataSnapshot comment : item.child("comments").getChildren())
+                        {
+                            comments.add(comment.getValue(Comment.class));
+                        }
+
                         long time=Long.parseLong(item.child("dateTime").getValue().toString());
-                        Status status=new Status(email,content,image,time,likes,null);
+                        Status status=new Status(email,content,image,time,likes,comments);
 
                         stack.push(status);
-                        sum+=likes.size();
+                        sum_likes+=likes.size();
+                        sum_comments+=comments.size();
                     }
 
                     while (!stack.isEmpty())
@@ -169,8 +197,9 @@ public class ProfileFragment extends Fragment {
                         status_list.add(stack.pop());
                     }
 
-                    //hiển thị tổng số like
-                    sumLikes.setText(Integer.toString(sum));
+                    //hiển thị tổng số like và comment
+                    sumLikes.setText(Integer.toString(sum_likes));
+                    sumComments.setText(Integer.toString(sum_comments));
 
                     //Gán 1 status rỗng
                     String email="";
@@ -180,7 +209,7 @@ public class ProfileFragment extends Fragment {
                     Status status=new Status(email,content,image,time,null,null);
 
                     status_list.add(status);
-                    lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, widthPixels, myEmail));
+                    lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, myEmail));
                 }
             }
 

@@ -94,6 +94,7 @@
         android:text="0"
         android:textSize="14sp"
         android:textColor="@color/black"
+        android:background="@drawable/background_click"
         android:layout_marginTop="5dp"
         android:layout_marginStart="5dp"
         android:layout_below="@+id/image_post"
