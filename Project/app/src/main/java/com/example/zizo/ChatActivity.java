@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.zizo.object.MessageModel;
@@ -52,6 +53,22 @@ public class ChatActivity extends AppCompatActivity {
 
         // Read from the database
         myRef=FirebaseDatabase.getInstance().getReference("User");
+
+        //Set title
+        myRef.child(friend).child("nickName").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String nickName=dataSnapshot.getValue(String.class);
+                setTitle(nickName);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        //Read Chat Box
         myRef.child(myEmail).child("chatBox").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

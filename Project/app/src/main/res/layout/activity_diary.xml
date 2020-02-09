@@ -20,5 +20,6 @@
         android:id="@+id/diary"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/btn_post"/>
+        android:layout_below="@+id/btn_post"
+        android:layout_marginBottom="52dp"/>
 </RelativeLayout>

@@ -167,13 +167,6 @@ public class DiaryFragment extends Fragment {
                              {
                                  sortStatus(status_list);
 
-                                 String email="";
-                                 String content="";
-                                 String image ="https://firebasestorage.googleapis.com/v0/b/zizo-9fdb5.appspot.com/o/images%2FtheEnd.png?alt=media&token=de8146f9-b3ef-4f18-8b77-a5d4b481f5a1";
-                                 long time=0;
-                                 Status status=new Status(email,content,image,time,null,null);
-
-                                 status_list.add(status);
                                  lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, myEmail));
                                  Log.e("test","finish");
                              }

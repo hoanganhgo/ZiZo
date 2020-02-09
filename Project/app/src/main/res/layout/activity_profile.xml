@@ -130,7 +130,8 @@
         android:id="@+id/my_status_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/bg_home" />
+        android:layout_below="@+id/bg_home"
+        android:layout_marginBottom="52dp"/>
 
 
 </RelativeLayout>

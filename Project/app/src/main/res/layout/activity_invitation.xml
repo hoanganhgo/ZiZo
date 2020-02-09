@@ -7,13 +7,19 @@
         android:layout_height="35dp"
         android:text="Những lời mời kết bạn"
         android:textSize="25sp"
+        android:textColor="@color/sky"
         android:textFontWeight="@integer/google_play_services_version"
         android:gravity="center"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="15dp"/>
 
-    <ListView
+    <GridView
         android:id="@+id/list_invitation"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:horizontalSpacing="1dp"
+        android:verticalSpacing="1dp"
+        android:columnWidth="120dp"
+        android:gravity="center"
+        android:numColumns="auto_fit"/>
 </LinearLayout>

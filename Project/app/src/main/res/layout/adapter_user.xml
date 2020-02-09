@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_selection">
+
+    <Button
+        android:id="@+id/btn_goTo_user"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/background_button_user"/>
 
     <de.hdodenhof.circleimageview.CircleImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -12,7 +20,7 @@
         android:src="@drawable/user"
         app:civ_border_width="1dp"
         app:civ_border_color="@color/sky"
-        android:layout_gravity="center_horizontal"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="5sp"
         android:layout_marginBottom="5dp"/>
     <TextView
@@ -21,16 +29,19 @@
         android:layout_height="wrap_content"
         android:text="nick name"
         android:textSize="15sp"
-        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/avatar_user"
+        android:layout_centerHorizontal="true"
         android:textColor="@color/black"/>
     <Button
         android:id="@+id/btn_addFriend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="kết bạn"
+        android:text="Kết bạn"
         android:textSize="12sp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="5dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/nickName_user"
+        android:layout_centerHorizontal="true"
         android:background="@drawable/background_post_button"/>
-</LinearLayout>
+
+</RelativeLayout>

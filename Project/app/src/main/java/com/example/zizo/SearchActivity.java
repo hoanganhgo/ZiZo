@@ -1,5 +1,6 @@
 package com.example.zizo;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.GridView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.zizo.adapter.CustomListAdapterUserBasic;
@@ -28,7 +30,7 @@ public class SearchActivity extends AppCompatActivity {
     private ArrayList<String> users=new ArrayList<String>();
     private ArrayList<String> friends=new ArrayList<>();
     private ArrayList<String> suggested_users=new ArrayList<>();
-    private GridView suggestions;
+    private GridView gv_suggestions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +42,7 @@ public class SearchActivity extends AppCompatActivity {
         final String myEmail=intent.getStringExtra("myEmail");
 
         final AutoCompleteTextView search=findViewById(R.id.search_friends);
-        suggestions=findViewById(R.id.suggestion_list);
+        gv_suggestions=findViewById(R.id.suggestion_list);
 
         //Lấy danh sách người dùng từ firebase
         final DatabaseReference myRef= FirebaseDatabase.getInstance().getReference().child("User");
@@ -108,7 +110,7 @@ public class SearchActivity extends AppCompatActivity {
                             {
                                 Log.e("test","Set Adapter");
                                 //Cai dat gridView
-                                suggestions.setAdapter(new CustomListAdapterUserBasic(getApplication(),data));
+                                gv_suggestions.setAdapter(new CustomListAdapterUserBasic(getApplication(),data, myEmail));
                             }else
                             {
                                 count[0]=count[0]+1;

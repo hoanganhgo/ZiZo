@@ -1,26 +1,35 @@
 package com.example.zizo;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.zizo.object.UserBasic;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 public class InvitationActivity extends AppCompatActivity {
 
-    ListView listView;
+    GridView gv_invitation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,37 +48,77 @@ public class InvitationActivity extends AppCompatActivity {
         final FirebaseDatabase database=FirebaseDatabase.getInstance();
         DatabaseReference myRef=database.getReference("User").child(myEmail).child("invitation");
 
-        FirebaseListAdapter<String> myAdapter=new FirebaseListAdapter<String>(this, String.class, android.R.layout.simple_list_item_1,myRef) {
+        FirebaseListAdapter<String> myAdapter=new FirebaseListAdapter<String>(this, String.class, R.layout.adapter_user,myRef) {
             @Override
-            protected void populateView(View v, String model, int position) {
-                TextView text = (TextView) v.findViewById(android.R.id.text1);
-                text.setText(model.replace('-','.'));
+            protected void populateView(View v, final String email, int position) {
+                Button btn_goTo=v.findViewById(R.id.btn_goTo_user);
+                final de.hdodenhof.circleimageview.CircleImageView avatar=v.findViewById(R.id.avatar_user);
+                final TextView nickName=v.findViewById(R.id.nickName_user);
+                Button btn_accept=v.findViewById(R.id.btn_addFriend);
+
+                btn_accept.setText("Chấp nhận");
+
+                FirebaseDatabase.getInstance().getReference("User").child(email)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                String refAvatar=dataSnapshot.child("avatar").getValue(String.class);
+                                String name=dataSnapshot.child("nickName").getValue(String.class);
+
+                                Picasso.get().load(refAvatar).into(avatar);
+                                nickName.setText(name);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                btn_accept.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        UserActivity.addEmailToList(email,database.getReference("User").child(myEmail).child("friends"));
+                        UserActivity.addEmailToList(myEmail,database.getReference("User").child(email).child("friends"));
+                        UserActivity.removeEmailToList(email,database.getReference("User").child(myEmail).child("invitation"));
+                    }
+                });
+
+                btn_goTo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent=new Intent(InvitationActivity.this, UserActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("email",email);
+                        startActivity(intent);
+                    }
+                });
             }
         };
 
-        listView=(ListView)findViewById(R.id.list_invitation);
-        listView.setAdapter(myAdapter);
+        gv_invitation=(GridView) findViewById(R.id.list_invitation);
+        gv_invitation.setAdapter(myAdapter);
 
         //Cài đặt sự kiện click
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final String user=parent.getItemAtPosition(position).toString();
-
-                AlertDialog.Builder alert=new AlertDialog.Builder(view.getContext());
-                alert.setMessage("Chấp nhận lời mời kết bạn");
-                alert.setTitle(user.replace('-','.'));
-                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.e("test", "Chap nhan "+user);
-                        UserActivity.addEmailToList(user,database.getReference("User").child(myEmail).child("friends"));
-                        UserActivity.addEmailToList(myEmail,database.getReference("User").child(user).child("friends"));
-                        UserActivity.removeEmailToList(user,database.getReference("User").child(myEmail).child("invitation"));
-                    }
-                });
-                alert.setCancelable(true);
-                alert.create().show();
-            }
-        });
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                final String user=parent.getItemAtPosition(position).toString();
+//
+//                AlertDialog.Builder alert=new AlertDialog.Builder(view.getContext());
+//                alert.setMessage("Chấp nhận lời mời kết bạn");
+//                alert.setTitle(user.replace('-','.'));
+//                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        Log.e("test", "Chap nhan "+user);
+//                        UserActivity.addEmailToList(user,database.getReference("User").child(myEmail).child("friends"));
+//                        UserActivity.addEmailToList(myEmail,database.getReference("User").child(user).child("friends"));
+//                        UserActivity.removeEmailToList(user,database.getReference("User").child(myEmail).child("invitation"));
+//                    }
+//                });
+//                alert.setCancelable(true);
+//                alert.create().show();
+//            }
+//        });
     }
 }
