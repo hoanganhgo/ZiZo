@@ -97,6 +97,10 @@ public class PostActivity extends AppCompatActivity {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("Status").child(email);
 
+                if (urlImage==null)
+                {
+                    urlImage="https://firebasestorage.googleapis.com/v0/b/zizo-9fdb5.appspot.com/o/default%2Fempty.png?alt=media&token=ecc7ef9c-98ee-4324-bf6b-e564d25ae7a6";
+                }
                 Status status=new Status(email,content,urlImage,dateTime,null,null);
                 myRef.push().setValue(status);
                 Toast.makeText(PostActivity.this,"Cảm nghĩ của bạn đã được đăng tải",Toast.LENGTH_LONG).show();
@@ -136,8 +140,22 @@ public class PostActivity extends AppCompatActivity {
                                         public void onSuccess() {
                                             DisplayMetrics displayMetrics = new DisplayMetrics();
                                             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-                                            int widthPixels = displayMetrics.widthPixels;
-                                            scaleImage(btnImage, widthPixels);
+                                            float widthPixels = displayMetrics.widthPixels;
+                                            float heightPixels=displayMetrics.heightPixels;
+                                            // Get the ImageView and its bitmap
+                                            Drawable drawing = btnImage.getDrawable();
+                                            Bitmap bitmap = ((BitmapDrawable)drawing).getBitmap();
+
+                                            // Get current dimensions
+                                            float width = bitmap.getWidth();
+                                            float height = bitmap.getHeight();
+                                            Log.e("test","scale: "+(height/width));
+                                            if ((height/width)<1.35f)
+                                            {
+                                                scaleImage(btnImage, widthPixels);
+                                            }else{
+                                                scaleImageHeight(btnImage,heightPixels);
+                                            }
                                         }
 
                                         @Override
@@ -164,7 +182,7 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
-    public static void scaleImage(ImageView imageView, int widthPixels)
+    public static void scaleImage(ImageView imageView, float widthPixels)
     {
         // Get the ImageView and its bitmap
         Drawable drawing = imageView.getDrawable();
@@ -175,12 +193,32 @@ public class PostActivity extends AppCompatActivity {
         int height = bitmap.getHeight();
         //Log.e("test", "w:"+width+"  h:"+height);
 
-        float scale=(float) widthPixels/width;
+        float scale= widthPixels/width;
         float h=height*scale;
         //Log.e("test", "h:"+h);
         int hImage=(int)h;
 
         imageView.getLayoutParams().width=ViewGroup.LayoutParams.MATCH_PARENT;
         imageView.getLayoutParams().height=hImage;
+    }
+
+    private void scaleImageHeight(ImageView imageView, float heightPixels)
+    {
+        // Get the ImageView and its bitmap
+        Drawable drawing = imageView.getDrawable();
+        Bitmap bitmap = ((BitmapDrawable)drawing).getBitmap();
+
+        // Get current dimensions
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        //Log.e("test", "w:"+width+"  h:"+height);
+
+        float scale= (heightPixels-350f)/height;
+        float w=width*scale;
+        //Log.e("test", "h:"+h);
+        int wImage=(int)w;
+
+        imageView.getLayoutParams().width=wImage;
+        imageView.getLayoutParams().height=(int)(heightPixels-350f);
     }
 }

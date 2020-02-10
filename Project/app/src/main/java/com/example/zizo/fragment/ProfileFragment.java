@@ -170,11 +170,11 @@ public class ProfileFragment extends Fragment {
                     for (DataSnapshot item: dataSnapshot.getChildren()) {
                         String email=myEmail;
                         String content=item.child("content").getValue().toString();
-                        String image="";
-                        if (item.child("image").exists())
-                        {
-                            image = item.child("image").getValue().toString();
-                        }
+                        String image = item.child("image").getValue().toString();
+//                        if (item.child("image").exists())
+//                        {
+//                            image = item.child("image").getValue().toString();
+//                        }
 
                         ArrayList<String> likes=new ArrayList<>();
                         for (DataSnapshot like: item.child("likes").getChildren())

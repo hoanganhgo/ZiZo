@@ -43,7 +43,6 @@ public class DiaryFragment extends Fragment {
     private String myEmail=null;
     private DatabaseReference myRef=null;
     private DatabaseReference refStatus=null;
-    private int widthPixels;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,6 +97,7 @@ public class DiaryFragment extends Fragment {
                         String email=myEmail;
                         String content=item.child("content").getValue().toString();
                         String image="";
+                        //String image = item.child("image").getValue().toString();
                         if (item.child("image").exists())
                         {
                             image = item.child("image").getValue().toString();
@@ -147,6 +147,7 @@ public class DiaryFragment extends Fragment {
                                     String email=friend;
                                     String content=item.child("content").getValue().toString();
                                     String image="";
+                                    //String image=item.child("image").getValue().toString();
                                     if (item.child("image").exists())
                                     {
                                         image = item.child("image").getValue().toString();
@@ -208,7 +209,7 @@ public class DiaryFragment extends Fragment {
 
             for (int j=i+1;j<n;j++)
             {
-                if (list.get(j).getDateTime()>list.get(i).getDateTime())
+                if (list.get(j).getDateTime()>list.get(max).getDateTime())
                 {
                     max=j;
                 }

@@ -38,7 +38,7 @@ public class FriendFragment extends Fragment{
     private ListView lv_friends;
     private String myEmail;
     private ArrayList<UserBasic> friends_list;
-    private ArrayList<String> friends_email=new ArrayList<String>();
+    private ArrayList<String> friends_email;
 
     private int size=0;
 
@@ -87,6 +87,7 @@ public class FriendFragment extends Fragment{
 
         //Set friends list
         friends_list=new ArrayList<UserBasic>();
+        friends_email=new ArrayList<String>();
 
         //Lấy danh sách người dùng từ firebase
         final DatabaseReference myRef= FirebaseDatabase.getInstance().getReference().child("User");
