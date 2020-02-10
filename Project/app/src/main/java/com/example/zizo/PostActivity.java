@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -79,12 +80,15 @@ public class PostActivity extends AppCompatActivity {
             }
         });
 
+        final MediaPlayer media=MediaPlayer.create(this,R.raw.post_click);
+
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Log.e("test",email);
                // Log.e("test",urlImage);
                 //Log.e("test",editContent.getText().toString());
+                media.start();
 
                 String content=editContent.getText().toString();
                 long dateTime=(new Date()).getTime();
@@ -113,7 +117,7 @@ public class PostActivity extends AppCompatActivity {
                    // Log.e("test", filePath);
 
                     //Uri file = Uri.fromFile(new File("/document/image:100656"));
-                    String filename = fileUri.getLastPathSegment() + ".jpg";
+                    String filename = email + fileUri.getLastPathSegment() + ".jpg";
                     StorageReference riversRef = mStorageRef.child("images").child(filename);
 
                     riversRef.putFile(fileUri)

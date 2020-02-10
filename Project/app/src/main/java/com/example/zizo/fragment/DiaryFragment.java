@@ -1,12 +1,14 @@
 package com.example.zizo.fragment;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -75,6 +77,7 @@ public class DiaryFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
         return view;
     }
 
@@ -83,7 +86,7 @@ public class DiaryFragment extends Fragment {
         super.onStart();
 
         final ArrayList<Status> status_list=new ArrayList<Status>();
-        Log.e("test","start");
+        //Log.e("test","start");
 
         //add my status
         refStatus.child(myEmail).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -94,7 +97,11 @@ public class DiaryFragment extends Fragment {
                     for (DataSnapshot item: dataSnapshot.getChildren()) {
                         String email=myEmail;
                         String content=item.child("content").getValue().toString();
-                        String image = item.child("image").getValue().toString();
+                        String image="";
+                        if (item.child("image").exists())
+                        {
+                            image = item.child("image").getValue().toString();
+                        }
 
                         ArrayList<String> likes=new ArrayList<>();
                         for (DataSnapshot like: item.child("likes").getChildren())
@@ -139,7 +146,11 @@ public class DiaryFragment extends Fragment {
                                 for (DataSnapshot item: dataSnapshot.getChildren()) {
                                     String email=friend;
                                     String content=item.child("content").getValue().toString();
-                                    String image = item.child("image").getValue().toString();
+                                    String image="";
+                                    if (item.child("image").exists())
+                                    {
+                                        image = item.child("image").getValue().toString();
+                                    }
 
                                     ArrayList<String> likes=new ArrayList<>();
                                     for (DataSnapshot like: item.child("likes").getChildren())
@@ -168,7 +179,7 @@ public class DiaryFragment extends Fragment {
                                  sortStatus(status_list);
 
                                  lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, myEmail));
-                                 Log.e("test","finish");
+                                 //Log.e("test","finish");
                              }
                         }
 

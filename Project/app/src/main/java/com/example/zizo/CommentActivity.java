@@ -1,6 +1,7 @@
 package com.example.zizo;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -60,9 +61,16 @@ public class CommentActivity extends AppCompatActivity {
 
         displayChatMessages();
 
+        final MediaPlayer media = MediaPlayer.create(this, R.raw.send_click);
+
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                media.start();
+                if (editComment.getText().toString().isEmpty())
+                {
+                    return;
+                }
                 DatabaseReference ref=FirebaseDatabase.getInstance().getReference(refStatus);
                 long time=(new Date()).getTime();
                 Comment comment=new Comment(myEmail,time,editComment.getText().toString());

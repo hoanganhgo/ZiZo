@@ -50,6 +50,7 @@ public class ProfileFragment extends Fragment {
     private StorageReference mStorageRef;
     private Uri fileUri;
     private String filePath;
+    private String myEmail;
     private TextView nickName;
     private Button btn_avatar;
     private TextView sumLikes;
@@ -87,7 +88,7 @@ public class ProfileFragment extends Fragment {
             temp=user.getEmail();
         }
         assert temp != null;
-        final String myEmail=temp.replace('.','-');
+        myEmail=temp.replace('.','-');
 
         //Lấy nickname
         myRef= FirebaseDatabase.getInstance().getReference("User").child(myEmail);
@@ -169,7 +170,11 @@ public class ProfileFragment extends Fragment {
                     for (DataSnapshot item: dataSnapshot.getChildren()) {
                         String email=myEmail;
                         String content=item.child("content").getValue().toString();
-                        String image = item.child("image").getValue().toString();
+                        String image="";
+                        if (item.child("image").exists())
+                        {
+                            image = item.child("image").getValue().toString();
+                        }
 
                         ArrayList<String> likes=new ArrayList<>();
                         for (DataSnapshot like: item.child("likes").getChildren())
@@ -224,7 +229,7 @@ public class ProfileFragment extends Fragment {
                     Log.e("test", filePath);
 
                     //Uri file = Uri.fromFile(new File("/document/image:100656"));
-                    String filename=fileUri.getLastPathSegment()+".jpg";
+                    String filename=myEmail+fileUri.getLastPathSegment()+".jpg";
                     StorageReference riversRef = mStorageRef.child("avatars").child(filename);
 
                     riversRef.putFile(fileUri)

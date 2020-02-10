@@ -205,7 +205,11 @@ public class UserActivity extends AppCompatActivity {
                     Stack<Status> stack =new Stack<Status>();
                     for (DataSnapshot item: dataSnapshot.getChildren()) {
                         String content=item.child("content").getValue().toString();
-                        String image = item.child("image").getValue().toString();
+                        String image="";
+                        if (item.child("image").exists())
+                        {
+                            image = item.child("image").getValue().toString();
+                        }
 
                         ArrayList<String> likes=new ArrayList<>();
                         for (DataSnapshot like: item.child("likes").getChildren())

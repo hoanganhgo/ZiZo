@@ -15,7 +15,7 @@
         android:id="@+id/inputEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Nhập tên tài khoản"
+        android:hint="@string/nh_p_t_n_t_i_kho_n"
         android:layout_gravity="center"
         android:width="350dp"
         android:layout_marginTop="10dp"/>
@@ -24,37 +24,38 @@
         android:id="@+id/inputPassWord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Nhập mật khẩu"
+        android:hint="@string/nh_p_m_t_kh_u"
         android:inputType="textPassword"
         android:layout_gravity="center"
         android:width="350dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="10dp"/>
 
     <EditText
         android:id="@+id/rePassWord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Nhập lại mật khẩu"
+        android:hint="@string/nh_p_l_i_m_t_kh_u"
         android:inputType="textPassword"
         android:layout_gravity="center"
         android:width="350dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="10dp"/>
 
     <EditText
         android:id="@+id/inputNick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Nhập Nick Name"
+        android:hint="@string/nh_p_nick_name"
         android:layout_gravity="center"
         android:width="350dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="10dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Giới tính"
+        android:text="@string/gi_i_t_nh"
         android:textSize="20dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"/>
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -63,12 +64,12 @@
             android:id="@+id/male"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nam"/>
+            android:text="@string/nam"/>
         <RadioButton
             android:id="@+id/female"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nữ"/>
+            android:text="@string/n"/>
     </RadioGroup>
 
     <EditText
@@ -76,18 +77,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="date"
-        android:hint="Nhập ngày sinh của bạn"
-        android:layout_marginTop="20dp"/>
+        android:hint="@string/nh_p_ng_y_sinh_c_a_b_n"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:id="@+id/notify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/red"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"
+        android:textAlignment="center"/>
 
     <Button
         android:id="@+id/signUp_Click"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Đăng ký"
+        android:text="@string/ng_k"
         android:paddingStart="50dp"
         android:paddingEnd="50dp"
         android:background="@drawable/background_post_button"
         android:layout_gravity="center"
-        android:layout_marginTop="30dp"/>
+        android:layout_marginTop="20dp"/>
 
 </LinearLayout>

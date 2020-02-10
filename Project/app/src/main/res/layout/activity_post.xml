@@ -12,7 +12,7 @@
         android:paddingBottom="15dp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:hint="Bạn đang nghĩ gì?"
+        android:hint="@string/b_n_ang_ngh_g"
         android:inputType="textMultiLine"
         android:textColorHint="@color/sky"/>
     <ImageButton
@@ -30,7 +30,7 @@
         android:id="@+id/btn_post"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Post"
+        android:text="@string/ng_t_i"
         android:paddingStart="50dp"
         android:paddingEnd="50dp"
         android:textSize="20sp"

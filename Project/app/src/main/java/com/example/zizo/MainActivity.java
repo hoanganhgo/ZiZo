@@ -64,8 +64,11 @@ public class MainActivity extends AppCompatActivity {
         btn_signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email=username.getText().toString()+"@zizo.com";
-                signIn(email, password.getText().toString());
+                if (checkLogin(username.getText().toString(),password.getText().toString()))
+                {
+                    String email=username.getText().toString()+"@zizo.com";
+                    signIn(email, password.getText().toString());
+                }
             }
         });
 
@@ -124,5 +127,21 @@ public class MainActivity extends AppCompatActivity {
                         // ...
                     }
                 });
+    }
+
+    private boolean checkLogin(String username, String password)
+    {
+        if (username.isEmpty())
+        {
+            this.username.requestFocus();
+            return false;
+        }
+
+        if (password.isEmpty())
+        {
+            this.password.requestFocus();
+            return false;
+        }
+        return true;
     }
 }

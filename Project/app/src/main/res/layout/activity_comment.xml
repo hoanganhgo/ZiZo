@@ -77,7 +77,7 @@
         android:layout_toLeftOf="@id/btn_comment"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:hint="Viết bình luận..."
+        android:hint="@string/vi_t_b_nh_lu_n"
         android:inputType="textMultiLine"
         />
 

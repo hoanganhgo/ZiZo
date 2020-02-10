@@ -6,7 +6,7 @@
         android:id="@+id/btn_post"
         android:layout_width="wrap_content"
         android:layout_height="32sp"
-        android:text="Hôm nay bạn thấy thế nào?"
+        android:text="@string/h_m_nay_b_n_th_y_th_n_o"
         android:textSize="10sp"
         android:textColor="@color/gray"
         android:background="@drawable/background_post_button"

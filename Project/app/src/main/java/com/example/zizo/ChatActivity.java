@@ -2,6 +2,7 @@ package com.example.zizo;
 
 import android.content.Intent;
 import android.media.Image;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -113,11 +114,17 @@ public class ChatActivity extends AppCompatActivity {
 
         // gửi tin nhắn
         ImageButton btnSend = (ImageButton) findViewById(R.id.btnSend);
+        final MediaPlayer media=MediaPlayer.create(this,R.raw.send_click);
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EditText input = (EditText)findViewById(R.id.input_Message);   //Nội dung tin nhắn
+                media.start();
+                if (input.getText().toString().isEmpty())
+                {
+                    return;
+                }
 
                 //Nếu chưa tồn tại ChatBox
                 if (!existChatBox)

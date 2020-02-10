@@ -21,7 +21,7 @@
             android:id="@+id/Email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Nhập tên tài khoản"
+            android:hint="@string/nh_p_t_n_t_i_kho_n"
             android:layout_gravity="center"
             android:width="350dp"
             android:layout_marginTop="10dp"/>
@@ -30,7 +30,7 @@
             android:id="@+id/PassWord"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Nhập Password"
+            android:hint="@string/nh_p_password"
             android:inputType="textPassword"
             android:layout_gravity="center"
             android:width="350dp"
@@ -43,13 +43,13 @@
             android:layout_marginTop="15dp"
             android:layout_marginLeft="20dp"
             android:shadowColor="@color/sky"
-            android:text="Lưu tài khoản và mật khẩu"/>
+            android:text="@string/l_u_t_i_kho_n_v_m_t_kh_u"/>
 
         <Button
             android:id="@+id/signIn_Click"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Đăng nhập"
+            android:text="@string/ng_nh_p"
             android:background="@drawable/background_button_2"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"/>
@@ -58,7 +58,7 @@
             android:id="@+id/signUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Đăng ký"
+            android:text="@string/ng_k"
             android:background="@drawable/background_button_2"
             android:layout_gravity="center"
             android:layout_marginTop="15dp"/>

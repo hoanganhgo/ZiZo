@@ -2,6 +2,7 @@ package com.example.zizo.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -37,6 +38,7 @@ public class CustomListAdapterStatus extends BaseAdapter {
     private ArrayList<Status> listData;
     private LayoutInflater layoutInflater;
     private String myEmail;
+    private MediaPlayer media;
     private Context context;
 
     public CustomListAdapterStatus(Context context, ArrayList<Status> listData, String myEmail)
@@ -45,6 +47,7 @@ public class CustomListAdapterStatus extends BaseAdapter {
         this.listData=listData;
         this.myEmail=myEmail;
         this.layoutInflater=LayoutInflater.from(context);
+        this.media=MediaPlayer.create(context,R.raw.like_click);
     }
     @Override
     public int getCount() {
@@ -146,17 +149,21 @@ public class CustomListAdapterStatus extends BaseAdapter {
         });
 
         holder.content.setText(status.getContent());
-        Picasso.get().load(status.getImage()).into(holder.image, new Callback() {
-            @Override
-            public void onSuccess() {
-                PostActivity.scaleImage(holder.image, HomeActivity.widthPixels);
-            }
+        if (!status.getImage().equals("")){
+            Picasso.get().load(status.getImage()).into(holder.image, new Callback() {
+                @Override
+                public void onSuccess() {
+                    PostActivity.scaleImage(holder.image, HomeActivity.widthPixels);
+                }
 
-            @Override
-            public void onError(Exception e) {
+                @Override
+                public void onError(Exception e) {
 
-            }
-        });
+                }
+            });
+        }else{
+            holder.image.setVisibility(View.INVISIBLE);
+        }
 
         long time=status.getDateTime();
         holder.time.setText(DateFormat.format("dd/MM/yyyy - HH:mm", time));
@@ -164,7 +171,8 @@ public class CustomListAdapterStatus extends BaseAdapter {
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("test", "Like"+position);
+                //Log.e("test", "Like"+position);
+                media.start();
 
                 if (!((Boolean) holder.like.getTag()))
                 {
@@ -180,7 +188,7 @@ public class CustomListAdapterStatus extends BaseAdapter {
                                     {
                                         if (Long.parseLong(item.child("dateTime").getValue().toString())==status.getDateTime())
                                         {
-                                            Log.e("test", "LIKE: "+item.child("content").getValue());
+                                            //Log.e("test", "LIKE: "+item.child("content").getValue());
                                             item.getRef().child("likes").push().setValue(myEmail);
                                         }
                                     }
@@ -204,7 +212,7 @@ public class CustomListAdapterStatus extends BaseAdapter {
                                     {
                                         if (Long.parseLong(item.child("dateTime").getValue().toString())==status.getDateTime())
                                         {
-                                            Log.e("test", "DISLIKE: "+item.child("content").getValue());
+                                            //Log.e("test", "DISLIKE: "+item.child("content").getValue());
                                             item.getRef().child("likes").addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

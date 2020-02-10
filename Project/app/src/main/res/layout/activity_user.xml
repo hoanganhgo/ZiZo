@@ -4,7 +4,7 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="230dp"
+        android:layout_height="225dp"
         android:layout_marginTop="-25dp"
         android:src="@drawable/bg_home" />
 
@@ -22,7 +22,7 @@
         android:id="@+id/nickName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="25dp"
+        android:textSize="25sp"
         android:textColor="@color/black"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/avatarUser"
@@ -32,7 +32,7 @@
         android:id="@+id/addFriend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Kết bạn"
+        android:text="@string/k_t_b_n"
         android:textColor="@color/black"
         android:background="@drawable/background_button_1"
         android:layout_marginLeft="20dp"
@@ -42,7 +42,7 @@
         android:id="@+id/addFollow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Theo dõi"
+        android:text="@string/theo_d_i"
         android:textColor="@color/black"
         android:background="@drawable/background_button_1"
         android:layout_alignParentRight="true"

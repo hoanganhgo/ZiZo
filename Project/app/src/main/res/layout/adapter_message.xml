@@ -16,7 +16,6 @@
         android:id="@+id/message_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Xin chào tất cả mọi người!"
         android:textSize="14sp"
         android:background="@drawable/background_message_user"
         android:paddingTop="4dp"
@@ -34,14 +33,12 @@
         android:layout_below="@+id/message_content"
         android:layout_toEndOf="@id/avatar_sender"
         android:layout_marginStart="10dp"
-        android:text="13:00"
         android:textSize="8sp" />
 
     <TextView
         android:id="@+id/message_content_friend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Xin chào tất cả mọi người!"
         android:textSize="13sp"
         android:background="@drawable/background_message"
         android:paddingTop="4dp"
@@ -59,7 +56,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/message_content_friend"
         android:layout_marginStart="10dp"
-        android:text="13:00"
         android:textSize="8sp"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="15dp"

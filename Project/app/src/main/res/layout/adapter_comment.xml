@@ -16,7 +16,6 @@
         android:id="@+id/commentator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="nick name"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="@color/black"
@@ -28,7 +27,6 @@
         android:id="@+id/comment_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Xin chào tất cả mọi người!"
         android:textSize="14sp"
         android:background="@drawable/background_comment_box"
         android:paddingTop="4dp"
@@ -46,6 +44,5 @@
         android:layout_below="@+id/comment_content"
         android:layout_toEndOf="@id/avatar_commentator"
         android:layout_marginStart="10dp"
-        android:text="13:00"
         android:textSize="8sp" />
 </RelativeLayout>

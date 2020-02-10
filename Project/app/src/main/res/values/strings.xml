@@ -1,3 +1,26 @@
 <resources>
-    <string name="app_name">ZiZo</string>
+    <string name="app_name" translatable="false">ZiZo</string>
+    <string name="nh_p_tin_nh_n">Nhập tin nhắn...</string>
+    <string name="vi_t_b_nh_lu_n">Viết bình luận...</string>
+    <string name="h_m_nay_b_n_th_y_th_n_o">Hôm nay bạn thấy thế nào?</string>
+    <string name="b_n_b" translatable="false">Bạn bè</string>
+    <string name="nh_ng_l_i_m_i_k_t_b_n">Những lời mời kết bạn</string>
+    <string name="nh_p_password">Nhập Password</string>
+    <string name="l_u_t_i_kho_n_v_m_t_kh_u">Lưu tài khoản và mật khẩu</string>
+    <string name="ng_nh_p">Đăng nhập</string>
+    <string name="ng_k">Đăng ký</string>
+    <string name="b_n_ang_ngh_g" translatable="false">Bạn đang nghĩ gì?</string>
+    <string name="ng_t_i">Đăng tải</string>
+    <string name="t_m_b_n_b_b_ng_t_n_t_i_kho_n">Tìm bạn bè bằng tên tài khoản</string>
+    <string name="g_i_k_t_b_n" translatable="false">Gợi ý kết bạn</string>
+    <string name="nh_p_t_n_t_i_kho_n">Nhập tên tài khoản</string>
+    <string name="nh_p_m_t_kh_u">Nhập mật khẩu</string>
+    <string name="nh_p_l_i_m_t_kh_u">Nhập lại mật khẩu</string>
+    <string name="nh_p_nick_name">Nhập Nick Name</string>
+    <string name="gi_i_t_nh" translatable="false">Giới tính</string>
+    <string name="nam">Nam</string>
+    <string name="n">Nữ</string>
+    <string name="nh_p_ng_y_sinh_c_a_b_n">Nhập ngày sinh của bạn</string>
+    <string name="k_t_b_n">Kết bạn</string>
+    <string name="theo_d_i">Theo dõi</string>
 </resources>
