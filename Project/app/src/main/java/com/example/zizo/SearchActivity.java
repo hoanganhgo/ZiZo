@@ -29,6 +29,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private ArrayList<String> users=new ArrayList<String>();
     private ArrayList<String> friends=new ArrayList<>();
+    private ArrayList<String> invitations=new ArrayList<>();
     private ArrayList<String> suggested_users=new ArrayList<>();
     private GridView gv_suggestions;
 
@@ -48,6 +49,24 @@ public class SearchActivity extends AppCompatActivity {
         final DatabaseReference myRef= FirebaseDatabase.getInstance().getReference().child("User");
 
         //Lấy danh bạn bè
+        myRef.child(myEmail).child("invitation").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot item:dataSnapshot.getChildren())
+                {
+                    String email=item.getValue(String.class);
+                    Log.e("test",email);
+                    invitations.add(email);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        //Lấy danh sách gửi lời mời kết bạn
         myRef.child(myEmail).child("friends").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -88,11 +107,21 @@ public class SearchActivity extends AppCompatActivity {
                         }
                     }
 
-                    if (!isFriend)
+                    boolean isSendInvitation=false;
+                    for (String invitation:invitations)
+                    {
+                        if (email.contentEquals(invitation))
+                        {
+                            isSendInvitation=true;
+                            break;
+                        }
+                    }
+
+                    if (!isFriend && !isSendInvitation)
                     {
                         suggested_users.add(email);
                     }
-                    users.add(email.replace('-','.'));
+                    users.add(convertEmailtoUserName(email));
                 }
 
                 final int[] count = {1};
@@ -140,7 +169,7 @@ public class SearchActivity extends AppCompatActivity {
         search.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String user=parent.getItemAtPosition(position).toString();
+                String user=parent.getItemAtPosition(position).toString()+"@zizo.com";
                 //String temp=search.get
                 //Log.e("test123", user+"  "+position);
                 Intent intent=new Intent(view.getContext(), UserActivity.class);
@@ -149,5 +178,11 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private String convertEmailtoUserName(String email)
+    {
+        int tail = email.indexOf('@');
+        return email.substring(0,tail);
     }
 }

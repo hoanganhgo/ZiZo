@@ -12,7 +12,7 @@
         android:src="@drawable/user"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
-        app:civ_border_width="2dp"
+        app:civ_border_width="1dp"
         app:civ_border_color="@color/sky"/>
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/online"

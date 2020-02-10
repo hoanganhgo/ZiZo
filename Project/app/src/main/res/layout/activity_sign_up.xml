@@ -3,15 +3,22 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/logo_zizo"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"/>
+
 
     <EditText
         android:id="@+id/inputEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Nhập Email"
+        android:hint="Nhập tên tài khoản"
         android:layout_gravity="center"
         android:width="350dp"
-        android:layout_marginTop="100dp"/>
+        android:layout_marginTop="10dp"/>
 
     <EditText
         android:id="@+id/inputPassWord"
@@ -47,7 +54,6 @@
         android:layout_height="wrap_content"
         android:text="Giới tính"
         android:textSize="20dp"
-        android:layout_marginLeft="40dp"
         android:layout_marginTop="20dp"/>
     <RadioGroup
         android:layout_width="wrap_content"
@@ -67,11 +73,10 @@
 
     <EditText
         android:id="@+id/dateOfBirth"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="date"
         android:hint="Nhập ngày sinh của bạn"
-        android:layout_marginLeft="40dp"
         android:layout_marginTop="20dp"/>
 
     <Button
@@ -79,6 +84,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Đăng ký"
+        android:paddingStart="50dp"
+        android:paddingEnd="50dp"
+        android:background="@drawable/background_post_button"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"/>
 

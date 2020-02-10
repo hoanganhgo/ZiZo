@@ -4,7 +4,9 @@
     <color name="green">#04F813</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="sky">#0099FF</color>
+    <color name="sky">#2C9CFC</color>
+    <color name="sky_light">#66BDFF</color>
+    <color name="sky_light_2">#4DBBFD</color>
     <color name="pink">#FF90B0</color>
     <color name="blue">#4669FC</color>
     <color name="white">#FFF</color>

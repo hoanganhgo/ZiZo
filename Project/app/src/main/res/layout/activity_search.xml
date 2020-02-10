@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:hint="Tìm bạn bè (vd: example@zizo.com)"
+        android:hint="Tìm bạn bè bằng tên tài khoản"
         android:textSize="20sp"
         android:completionThreshold="1"
         />

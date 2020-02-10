@@ -5,8 +5,9 @@
 
     <ImageView
         android:id="@+id/img_like"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32sp"
+        android:layout_height="32sp"
+        android:scaleType="fitXY"
         android:src="@drawable/pink_heart"
         android:layout_marginStart="10dp"
         android:layout_alignParentStart="true"/>
@@ -22,8 +23,9 @@
 
     <ImageView
         android:id="@+id/img_comment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32sp"
+        android:layout_height="32sp"
+        android:scaleType="fitXY"
         android:layout_marginEnd="5dp"
         android:src="@drawable/comment"
         android:layout_toLeftOf="@id/comments"/>
@@ -56,16 +58,16 @@
         android:layout_below="@+id/separator"
         android:layout_above="@+id/btn_comment"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/btn_comment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="35sp"
+        android:layout_height="35sp"
+        android:src="@drawable/send"
+        android:scaleType="fitXY"
+        android:background="@drawable/background_click"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:clickable="true"
-        android:src="@drawable/ic_launcher_background"
-        android:tint="@android:color/white"
-        android:text="post" />
+        android:clickable="true" />
 
 
     <EditText

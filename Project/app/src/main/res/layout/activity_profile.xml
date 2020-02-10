@@ -25,7 +25,7 @@
         android:src="@drawable/user"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        app:civ_border_width="2dp"
+        app:civ_border_width="1dp"
         app:civ_border_color="@color/sky"/>
 
     <TextView
@@ -33,15 +33,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="25dp"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/avatar"
         android:layout_marginTop="5dp"/>
 
     <ImageView
         android:id="@+id/imageSumLikes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32sp"
+        android:layout_height="32sp"
         android:src="@drawable/pink_heart"
         android:layout_below="@+id/nickName"
         android:layout_marginTop="10dp"
@@ -61,8 +61,8 @@
 
     <ImageView
         android:id="@+id/imageSumComments"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32sp"
+        android:layout_height="32sp"
         android:src="@drawable/comment"
         android:layout_below="@+id/nickName"
         android:layout_toRightOf="@id/imageSumLikes"

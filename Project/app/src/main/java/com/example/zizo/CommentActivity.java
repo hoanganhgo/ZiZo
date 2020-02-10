@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -30,7 +31,7 @@ public class CommentActivity extends AppCompatActivity {
     private TextView likes;
     private TextView comments;
     private EditText editComment;
-    private Button btnPost;
+    private ImageButton btnPost;
 
     private String myEmail=null;
     private int sumLikes=0;
@@ -46,7 +47,7 @@ public class CommentActivity extends AppCompatActivity {
         likes=(TextView)findViewById(R.id.likes);
         comments=(TextView)findViewById(R.id.comments);
         editComment=(EditText)findViewById(R.id.input_comment);
-        btnPost=(Button)findViewById(R.id.btn_comment);
+        btnPost=(ImageButton) findViewById(R.id.btn_comment);
 
         Intent intent=getIntent();
         myEmail=intent.getStringExtra("myEmail");

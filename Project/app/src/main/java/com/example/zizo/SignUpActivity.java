@@ -26,7 +26,7 @@ import java.util.Date;
 public class SignUpActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private EditText email;
+    private EditText username;
     private EditText password;
     private EditText nickName;
     private RadioButton male;
@@ -44,7 +44,7 @@ public class SignUpActivity extends AppCompatActivity {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        email=(EditText)findViewById(R.id.inputEmail);
+        username=(EditText)findViewById(R.id.inputEmail);
         password=(EditText)findViewById(R.id.inputPassWord);
         nickName=(EditText)findViewById(R.id.inputNick);
         male=(RadioButton)findViewById(R.id.male);
@@ -55,7 +55,8 @@ public class SignUpActivity extends AppCompatActivity {
         btn_signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                register(email.getText().toString(), password.getText().toString());
+                String email=username.getText().toString()+"@zizo.com";
+                register(email, password.getText().toString());
 
                 String sex="";
                 if (male.isChecked())
@@ -66,7 +67,7 @@ public class SignUpActivity extends AppCompatActivity {
                 {
                     sex="Nữ";
                 }
-                String emailUser = email.getText().toString().replace('.','-');
+                String emailUser = email.replace('.','-');
                 upLoadUser(emailUser,nickName.getText().toString(),dateOfBirth.getText().toString(),sex);
             }
         });
@@ -100,7 +101,7 @@ public class SignUpActivity extends AppCompatActivity {
                 });
     }
 
-    //Ghi thông tin user vào database
+    //Ghi thông tin user vào Firebase database
     private void upLoadUser(String email, String nickName, String dateOfBirth, String sex)
     {
         long realTime=(new Date()).getTime();

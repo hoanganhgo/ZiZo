@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     final String TAG="signUp123";
     Button btn_signUp;
-    EditText email;
+    EditText username;
     EditText password;
     CheckBox saveUser;
     Button btn_signIn;
@@ -44,20 +44,19 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         btn_signUp=(Button)findViewById(R.id.signUp);
-        email=(EditText)findViewById(R.id.Email);
+        username=(EditText)findViewById(R.id.Email);
         password=(EditText)findViewById(R.id.PassWord);
         saveUser=(CheckBox)findViewById(R.id.saveUserName);
         btn_signIn=(Button)findViewById(R.id.signIn_Click);
-        //progressBar=(ProgressBar)findViewById(R.id.progressBar_cyclic);
 
         //Tải lại tài khoản và mật khẩu đã lưu
         sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        String savedEmail=sharedPreferences.getString("Email",null);
+        String savedUsername=sharedPreferences.getString("Username",null);
         String savedPass=sharedPreferences.getString("PassWord",null);
 
-        if (savedEmail!=null && savedPass!=null)
+        if (savedUsername!=null && savedPass!=null)
         {
-            email.setText(savedEmail);
+            username.setText(savedUsername);
             password.setText(savedPass);
             saveUser.setChecked(true);
         }
@@ -65,7 +64,8 @@ public class MainActivity extends AppCompatActivity {
         btn_signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn(email.getText().toString(), password.getText().toString());
+                String email=username.getText().toString()+"@zizo.com";
+                signIn(email, password.getText().toString());
             }
         });
 
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                                 //sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                                editor.putString("Email", email);
+                                editor.putString("Username", username.getText().toString());
                                 editor.putString("PassWord", password);
                                 editor.apply();
                             }

@@ -14,14 +14,15 @@
         android:paddingEnd="10dp"
         android:hint="Bạn đang nghĩ gì?"
         android:inputType="textMultiLine"
-        android:textColorHint="@color/pink"/>
+        android:textColorHint="@color/sky"/>
     <ImageButton
         android:id="@+id/edit_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
         android:src="@drawable/add_image"
-        android:background="@color/transparent"
+        android:background="@drawable/background_post_button"
+        android:padding="10dp"
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="15dp"/>
@@ -30,9 +31,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Post"
+        android:paddingStart="50dp"
+        android:paddingEnd="50dp"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_gravity="center"
-        android:background="@drawable/background_button_2"/>
+        android:background="@drawable/background_post_button"/>
 
 </LinearLayout>

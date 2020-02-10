@@ -5,7 +5,7 @@
     <Button
         android:id="@+id/btn_post"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="32sp"
         android:text="Hôm nay bạn thấy thế nào?"
         android:textSize="10sp"
         android:textColor="@color/gray"
