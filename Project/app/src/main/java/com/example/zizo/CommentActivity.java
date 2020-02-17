@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -16,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.zizo.object.Comment;
-import com.example.zizo.object.MessageModel;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,14 +26,9 @@ import java.util.Date;
 
 public class CommentActivity extends AppCompatActivity {
 
-    private TextView likes;
-    private TextView comments;
     private EditText editComment;
-    private ImageButton btnPost;
 
     private String myEmail=null;
-    private int sumLikes=0;
-    private int sumComments=0;
     private String refStatus=null;
 
     @Override
@@ -45,21 +37,27 @@ public class CommentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
 
-        likes=(TextView)findViewById(R.id.likes);
-        comments=(TextView)findViewById(R.id.comments);
+        TextView likes = (TextView) findViewById(R.id.likes);
+        TextView comments = (TextView) findViewById(R.id.comments);
         editComment=(EditText)findViewById(R.id.input_comment);
-        btnPost=(ImageButton) findViewById(R.id.btn_comment);
+        ImageButton btnPost = (ImageButton) findViewById(R.id.btn_comment);
 
         Intent intent=getIntent();
         myEmail=intent.getStringExtra("myEmail");
-        sumLikes=intent.getIntExtra("likes", 0);
-        sumComments=intent.getIntExtra("comments",0);
+        int sumLikes = intent.getIntExtra("likes", 0);
+        int sumComments = intent.getIntExtra("comments", 0);
         refStatus=intent.getStringExtra("refStatus");
 
         likes.setText(Integer.toString(sumLikes));
         comments.setText(Integer.toString(sumComments));
 
-        displayChatMessages();
+        Thread thread1=new Thread(){
+          @Override
+          public void run(){
+              displayComments();
+          }
+        };
+        thread1.start();
 
         final MediaPlayer media = MediaPlayer.create(this, R.raw.send_click);
 
@@ -81,7 +79,7 @@ public class CommentActivity extends AppCompatActivity {
     }
 
     // hiển thị tin nhắn
-    private void displayChatMessages(){
+    private void displayComments(){
         FirebaseListAdapter<Comment> adapter = new FirebaseListAdapter<Comment>(this, Comment.class,
                 R.layout.adapter_comment, FirebaseDatabase.getInstance().getReference(refStatus).child("comments")
         ) {
@@ -102,7 +100,9 @@ public class CommentActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 nickName.setText(dataSnapshot.child("nickName").getValue().toString());
-                                Picasso.get().load(dataSnapshot.child("avatar").getValue().toString()).into(avatar);
+
+                                float widthAvatar=200*(HomeActivity.widthPixels/720f);
+                                Picasso.get().load(dataSnapshot.child("avatar").getValue().toString()).resize((int)widthAvatar,0).into(avatar);
                             }
 
                             @Override
@@ -115,5 +115,12 @@ public class CommentActivity extends AppCompatActivity {
 
         ListView listOfMessages = (ListView)findViewById(R.id.comments_list);
         listOfMessages.setAdapter(adapter);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        HomeActivity.resetDiary=false;
+        finish();
     }
 }

@@ -1,21 +1,21 @@
 package com.example.zizo.fragment;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.zizo.HomeActivity;
+import com.example.zizo.MainActivity;
 import com.example.zizo.PostActivity;
 import com.example.zizo.R;
 import com.example.zizo.adapter.CustomListAdapterStatus;
@@ -30,13 +30,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 
 public class DiaryFragment extends Fragment {
 
     private ListView lv_status;
-    private Button btn_post;
+    private ProgressBar progressBar;
 
     private int sizeFriend=0;
     private int countFriend=0;
@@ -57,7 +55,10 @@ public class DiaryFragment extends Fragment {
 
         //Set ListView Status
         lv_status=(ListView)view.findViewById(R.id.diary);
-        btn_post=view.findViewById(R.id.btn_post);
+        Button btn_post = view.findViewById(R.id.btn_post);
+        progressBar=(ProgressBar)view.findViewById(R.id.progressBar_Diary);
+
+        MainActivity.startProgressBar(progressBar,80);
 
         //Lấy thông tin user
         FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
@@ -84,120 +85,145 @@ public class DiaryFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+        //Không reset khi vào comment và trả ra
+        if (!HomeActivity.resetDiary){
+            HomeActivity.resetDiary=true;
+            return;
+        }
+
         final ArrayList<Status> status_list=new ArrayList<Status>();
         //Log.e("test","start");
 
-        //add my status
-        refStatus.child(myEmail).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists())
-                {
-                    for (DataSnapshot item: dataSnapshot.getChildren()) {
-                        String email=myEmail;
-                        String content=item.child("content").getValue().toString();
-                        String image="";
-                        //String image = item.child("image").getValue().toString();
-                        if (item.child("image").exists())
-                        {
-                            image = item.child("image").getValue().toString();
-                        }
+        Thread thread1=new Thread(){
+          @Override
+          public void run()
+          {
+              //add my status
+              refStatus.child(myEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+                  @Override
+                  public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+                      if (dataSnapshot.exists())
+                      {
+                          for (DataSnapshot item: dataSnapshot.getChildren()) {
+                              String email=myEmail;
+                              String content=item.child("content").getValue().toString();
+                              String image=HomeActivity.imageDefault;
+                              if (item.child("image").exists())
+                              {
+                                  image = item.child("image").getValue().toString();
+                              }
 
-                        ArrayList<String> likes=new ArrayList<>();
-                        for (DataSnapshot like: item.child("likes").getChildren())
-                        {
-                            likes.add(like.getValue().toString());
-                            //Log.e("test", like.getValue().toString());
-                        }
+                              ArrayList<String> likes=new ArrayList<>();
+                              for (DataSnapshot like: item.child("likes").getChildren())
+                              {
+                                  likes.add(like.getValue().toString());
+                                  //Log.e("test", like.getValue().toString());
+                              }
 
-                        ArrayList<Comment> comments=new ArrayList<>();
-                        for (DataSnapshot comment : item.child("comments").getChildren())
-                        {
-                            comments.add(comment.getValue(Comment.class));
-                        }
+                              ArrayList<Comment> comments=new ArrayList<>();
+                              for (DataSnapshot comment : item.child("comments").getChildren())
+                              {
+                                  comments.add(comment.getValue(Comment.class));
+                              }
 
-                        long time=Long.parseLong(item.child("dateTime").getValue().toString());
-                        Status status=new Status(email,content,image,time,likes,comments);
+                              long time=Long.parseLong(item.child("dateTime").getValue().toString());
+                              Status status=new Status(email,content,image,time,likes,comments);
 
-                        status_list.add(status);
-                        //Log.e("test",image);
-                    }
-                }
-            }
+                              status_list.add(status);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                              //Log.e("test",image);
+                          }
+                      }
+                  }
 
-            }
-        });
+                  @Override
+                  public void onCancelled(@NonNull DatabaseError databaseError) {
 
-        myRef.child(myEmail).child("friends").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot item: dataSnapshot.getChildren()) {
-                    final String friend=item.getValue().toString();
-                    //Log.e("test",friend);
-                    sizeFriend++;
-                    refStatus.child(friend).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                             if (dataSnapshot.exists())
-                             {
-                                for (DataSnapshot item: dataSnapshot.getChildren()) {
-                                    String email=friend;
-                                    String content=item.child("content").getValue().toString();
-                                    String image="";
-                                    //String image=item.child("image").getValue().toString();
-                                    if (item.child("image").exists())
-                                    {
-                                        image = item.child("image").getValue().toString();
-                                    }
+                  }
+              });
+          }
+        };
+        thread1.start();
 
-                                    ArrayList<String> likes=new ArrayList<>();
-                                    for (DataSnapshot like: item.child("likes").getChildren())
-                                    {
-                                        likes.add(like.getValue().toString());
-                                        //Log.e("test", like.getValue().toString());
-                                    }
 
-                                    ArrayList<Comment> comments=new ArrayList<>();
-                                    for (DataSnapshot comment : item.child("comments").getChildren())
-                                    {
-                                        comments.add(comment.getValue(Comment.class));
-                                    }
+        Thread thread2=new Thread(){
+          @Override
+          public void run(){
+              myRef.child(myEmail).child("friends").addListenerForSingleValueEvent(new ValueEventListener() {
+                  @Override
+                  public void onDataChange(final DataSnapshot dataSnapshot) {
+                      if (dataSnapshot.exists())
+                      {
+                          for (DataSnapshot item: dataSnapshot.getChildren()) {
+                              final String friend=item.getValue().toString();
+                              //Log.e("test",friend);
+                              sizeFriend++;
+                              refStatus.child(friend).addListenerForSingleValueEvent(new ValueEventListener() {
+                                  @Override
+                                  public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                      if (dataSnapshot.exists())
+                                      {
+                                          for (DataSnapshot item: dataSnapshot.getChildren()) {
+                                              String email=friend;
+                                              String content=item.child("content").getValue().toString();
+                                              String image= HomeActivity.imageDefault;
+                                              if (item.child("image").exists())
+                                              {
+                                                  image = item.child("image").getValue().toString();
+                                              }
 
-                                    long time=Long.parseLong(item.child("dateTime").getValue().toString());
-                                    Status status=new Status(email,content,image,time,likes,comments);
+                                              ArrayList<String> likes=new ArrayList<>();
+                                              for (DataSnapshot like: item.child("likes").getChildren())
+                                              {
+                                                  likes.add(like.getValue().toString());
+                                                  //Log.e("test", like.getValue().toString());
+                                              }
 
-                                    status_list.add(status);
-                                    //Log.e("test",image);
-                                }
-                             }
+                                              ArrayList<Comment> comments=new ArrayList<>();
+                                              for (DataSnapshot comment : item.child("comments").getChildren())
+                                              {
+                                                  comments.add(comment.getValue(Comment.class));
+                                              }
 
-                             countFriend++;
-                             if (countFriend==sizeFriend)
-                             {
-                                 sortStatus(status_list);
+                                              long time=Long.parseLong(item.child("dateTime").getValue().toString());
+                                              Status status=new Status(email,content,image,time,likes,comments);
 
-                                 lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, myEmail));
-                                 //Log.e("test","finish");
-                             }
-                        }
+                                              status_list.add(status);
+                                              //Log.e("test",image);
+                                          }
+                                      }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                      countFriend++;
+                                      if (countFriend==sizeFriend)
+                                      {
+                                          sortStatus(status_list);
 
-                        }
-                    });
-                }
-            }
+                                          lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, myEmail));
+                                          //Log.e("test","finish");
+                                          MainActivity.finishProgressBar(progressBar);
+                                      }
+                                  }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                  @Override
+                                  public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                                  }
+                              });
+                          }
+                      }
+                  }
+
+                  @Override
+                  public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                  }
+              });
+          }
+        };
+        thread2.start();
+
     }
+
 
     private void sortStatus(ArrayList<Status> list)
     {

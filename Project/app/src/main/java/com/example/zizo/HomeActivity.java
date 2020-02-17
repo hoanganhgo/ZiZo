@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
-import android.view.Window;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,6 +26,8 @@ import java.util.Date;
 public class HomeActivity extends AppCompatActivity {
     public static float widthPixels=0f;
     public static float heightPixels=0f;
+    public static String imageDefault="https://firebasestorage.googleapis.com/v0/b/zizo-9fdb5.appspot.com/o/default%2Fempty.png?alt=media&token=ecc7ef9c-98ee-4324-bf6b-e564d25ae7a6";
+    public static boolean resetDiary=true;
 
     BottomNavigationView bottomNavigation;
     private FirebaseAuth auth;
@@ -41,13 +42,18 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_home);
 
-        auth=FirebaseAuth.getInstance();
-
-        //Lấy kích thước màn hình
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        widthPixels = displayMetrics.widthPixels;
-        heightPixels=displayMetrics.heightPixels;
+        Thread threadGetSizeScreen=new Thread(){
+            @Override
+            public void run()
+            {
+                //Lấy kích thước màn hình
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                widthPixels = displayMetrics.widthPixels;
+                heightPixels=displayMetrics.heightPixels;
+            }
+        };
+        threadGetSizeScreen.start();
 
         //Khởi tạo các fragment
         chatBoxFragment=new ChatBoxFragment();
@@ -61,10 +67,11 @@ public class HomeActivity extends AppCompatActivity {
         openFragment(diaryFragment);
 
         //Tiến trình cập nhật thời gian thực
-        Thread thread = new Thread() {
+        Thread threadUpdateRealTime = new Thread() {
             @Override
             public void run() {
                 try {
+                    auth=FirebaseAuth.getInstance();
                     FirebaseUser user=auth.getCurrentUser();
                     assert user != null;
                     String myEmail=user.getEmail().replace('.','-');
@@ -80,8 +87,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         };
-
-        thread.start();
+        threadUpdateRealTime.start();
     }
 
     public void openFragment(Fragment fragment) {

@@ -3,6 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ProgressBar
+        android:id="@+id/progressBar_ChatBox"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:indeterminate="false"
+        android:progressDrawable="@drawable/circular_progress_bar"
+        android:background="@drawable/circle_shape"
+        android:layout_centerInParent="true"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:max="100"
+        android:visibility="invisible"
+        android:progress="0" />
+
     <ListView
         android:id="@+id/friends_list"
         android:layout_width="match_parent"

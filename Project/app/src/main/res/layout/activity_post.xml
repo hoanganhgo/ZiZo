@@ -38,4 +38,17 @@
         android:layout_gravity="center"
         android:background="@drawable/background_post_button"/>
 
+    <ProgressBar
+        android:id="@+id/progressBar_Post"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:indeterminate="false"
+        android:progressDrawable="@drawable/circular_progress_bar"
+        android:background="@drawable/circle_shape"
+        android:layout_gravity="center"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:max="100"
+        android:visibility="invisible"
+        android:progress="0" />
+
 </LinearLayout>

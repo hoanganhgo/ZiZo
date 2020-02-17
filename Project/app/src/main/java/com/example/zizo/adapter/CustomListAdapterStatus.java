@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.text.format.DateFormat;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 
@@ -22,7 +20,6 @@ import com.example.zizo.HomeActivity;
 import com.example.zizo.PostActivity;
 import com.example.zizo.R;
 import com.example.zizo.object.Status;
-import com.example.zizo.object.UserBasic;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,7 +29,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class CustomListAdapterStatus extends BaseAdapter {
     private ArrayList<Status> listData;
@@ -89,81 +85,105 @@ public class CustomListAdapterStatus extends BaseAdapter {
             holder=(CustomListAdapterStatus.ViewHolder)convertView.getTag();
         }
 
+        //Log.d("test123", "Draw Screen");
+
         final Status status=this.listData.get(position);
         final int[] sumOfLikes = {0};
         final int[] sumOfComments={0};
 
-        if (status.getComments()!=null)
-        {
-            sumOfComments[0]=status.getComments().size();
-        }
-        holder.amountOfComments.setText(Integer.toString(sumOfComments[0]));
-
-        //Kiểm tra xem status đã được like chưa
-        if (status.getLikes()!=null)
-        {
-            Boolean liked=false;
-            for (String item : status.getLikes())
+        Thread thread1=new Thread(){
+            @Override
+            public void run()
             {
-                if (myEmail.contentEquals(item))
+                //Get Số lượt comments
+                if (status.getComments()!=null)
                 {
-                    liked=true;
+                    sumOfComments[0]=status.getComments().size();
+                    int amount=status.getComments().size();
+                    holder.amountOfComments.setText(Integer.toString(amount));
+                }else
+                {
+                    holder.amountOfComments.setText("0");
+                }
+
+                //Kiểm tra xem status đã được like chưa
+                if (status.getLikes()!=null)
+                {
+                    boolean liked=false;
+                    for (String item : status.getLikes())
+                    {
+                        if (myEmail.contentEquals(item))
+                        {
+                            liked=true;
+                        }
+                    }
+
+                    if (liked)
+                    {
+                        holder.like.setTag(Boolean.TRUE);
+                        holder.like.setBackgroundResource(R.drawable.pink_heart);
+                    }
+                    else{
+                        holder.like.setTag(Boolean.FALSE);
+                        holder.like.setBackgroundResource(R.drawable.heart);
+                    }
+                    sumOfLikes[0]=status.getLikes().size();
+                    int amount=status.getLikes().size();
+                    holder.amountOfLikes.setText(Integer.toString(amount));
+                }else{
+                    holder.like.setTag(Boolean.FALSE);
+                    holder.like.setBackgroundResource(R.drawable.heart);
+                    holder.amountOfLikes.setText("0");
                 }
             }
+        };
+        thread1.start();
 
-            if (liked)
-            {
-                holder.like.setTag(Boolean.TRUE);
-                holder.like.setBackgroundResource(R.drawable.pink_heart);
-            }
-            else{
-                holder.like.setTag(Boolean.FALSE);
-            }
-            sumOfLikes[0]=status.getLikes().size();
-            holder.amountOfLikes.setText(Integer.toString(sumOfLikes[0]));
-        }else{
-            holder.like.setTag(Boolean.FALSE);
-            holder.amountOfLikes.setText("0");
-        }
-
-
-        //lấy avatar và nickname từ email
-        DatabaseReference myRef= FirebaseDatabase.getInstance().getReference("User").child(status.getEmail());
         // Read from the database
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        Thread thread2=new Thread()
+        {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void run(){
+                //lấy avatar và nickname từ email
+                DatabaseReference myRef= FirebaseDatabase.getInstance().getReference("User").child(status.getEmail());
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        final String avatar = dataSnapshot.child("avatar").getValue(String.class);
+                        String nickName=dataSnapshot.child("nickName").getValue(String.class);
+                        //Log.d("test123", "Value is: " + avatar);
+                        //Log.d("test123", "Value is: " + nickName);
+                        holder.nickName.setText(nickName);
 
-                String avatar = dataSnapshot.child("avatar").getValue(String.class);
-                String nickName=dataSnapshot.child("nickName").getValue(String.class);
-                //Log.d("test123", "Value is: " + avatar);
-                //Log.d("test123", "Value is: " + nickName);
-                holder.nickName.setText(nickName);
-                Picasso.get().load(avatar).into(holder.avatar);
+                        float widthAvatar=100*(HomeActivity.widthPixels/720f);
+                        Picasso.get().load(avatar).resize((int)widthAvatar,0).into(holder.avatar);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        // Failed to read value
+                    }
+                });
+            }
+
+        };
+        thread2.start();
+
+
+        holder.content.setText(status.getContent());
+
+        Picasso.get().load(status.getImage()).resize((int)HomeActivity.widthPixels,0).into(holder.image, new Callback() {
+            @Override
+            public void onSuccess() {
+                PostActivity.scaleImage(holder.image, HomeActivity.widthPixels);
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
+            public void onError(Exception e) {
+
             }
         });
 
-        holder.content.setText(status.getContent());
-        if (!status.getImage().equals("")){
-            Picasso.get().load(status.getImage()).into(holder.image, new Callback() {
-                @Override
-                public void onSuccess() {
-                    PostActivity.scaleImage(holder.image, HomeActivity.widthPixels);
-                }
-
-                @Override
-                public void onError(Exception e) {
-
-                }
-            });
-        }else{
-            holder.image.setVisibility(View.INVISIBLE);
-        }
 
         long time=status.getDateTime();
         holder.time.setText(DateFormat.format("dd/MM/yyyy - HH:mm", time));
@@ -179,6 +199,11 @@ public class CustomListAdapterStatus extends BaseAdapter {
                     holder.like.setBackgroundResource(R.drawable.pink_heart);
                     holder.like.setTag(Boolean.TRUE);
                     holder.amountOfLikes.setText(Integer.toString(++sumOfLikes[0]));
+                    if (status.getLikes()==null)
+                    {
+                        status.initLikes();
+                    }
+                    status.addLike(myEmail);
 
                     FirebaseDatabase.getInstance().getReference("Status").child(status.getEmail())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -203,6 +228,7 @@ public class CustomListAdapterStatus extends BaseAdapter {
                     holder.like.setBackgroundResource(R.drawable.heart);
                     holder.like.setTag(Boolean.FALSE);
                     holder.amountOfLikes.setText(Integer.toString(--sumOfLikes[0]));
+                    status.removeLike(myEmail);
 
                     FirebaseDatabase.getInstance().getReference("Status").child(status.getEmail())
                             .addListenerForSingleValueEvent(new ValueEventListener() {

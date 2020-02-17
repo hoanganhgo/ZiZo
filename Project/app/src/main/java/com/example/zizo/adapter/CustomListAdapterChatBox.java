@@ -7,9 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.example.zizo.HomeActivity;
 import com.example.zizo.R;
 import com.example.zizo.object.ChatBox;
-import com.example.zizo.object.UserBasic;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -61,7 +61,8 @@ public class CustomListAdapterChatBox extends BaseAdapter {
         ChatBox chatBox=this.listData.get(position);
 
         //Set avatar by Url
-        Picasso.get().load(chatBox.getAvatar()).into(holder.avatar);
+        float widthAvatar=250*(HomeActivity.widthPixels/720f);
+        Picasso.get().load(chatBox.getAvatar()).resize((int)widthAvatar,0).into(holder.avatar);
 
         if (chatBox.isOnline())
         {

@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ProgressBar
+        android:id="@+id/progressBar_register"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:indeterminate="false"
+        android:progressDrawable="@drawable/circular_progress_bar"
+        android:background="@drawable/circle_shape"
+        android:elevation="1dp"
+        android:layout_centerInParent="true"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:max="100"
+        android:visibility="invisible"
+        android:progress="0" />
+
     <ImageView
+        android:id="@+id/logo_zizo"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:src="@drawable/logo_zizo"
-        android:layout_gravity="center_horizontal"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"/>
 
 
@@ -16,7 +31,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="@string/nh_p_t_n_t_i_kho_n"
-        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/logo_zizo"
         android:width="350dp"
         android:layout_marginTop="10dp"/>
 
@@ -26,7 +42,8 @@
         android:layout_height="wrap_content"
         android:hint="@string/nh_p_m_t_kh_u"
         android:inputType="textPassword"
-        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/inputEmail"
         android:width="350dp"
         android:layout_marginTop="10dp"/>
 
@@ -36,7 +53,8 @@
         android:layout_height="wrap_content"
         android:hint="@string/nh_p_l_i_m_t_kh_u"
         android:inputType="textPassword"
-        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/inputPassWord"
         android:width="350dp"
         android:layout_marginTop="10dp"/>
 
@@ -45,21 +63,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="@string/nh_p_nick_name"
-        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/rePassWord"
         android:width="350dp"
         android:layout_marginTop="10dp"/>
 
     <TextView
+        android:id="@+id/text_sex"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/gi_i_t_nh"
-        android:textSize="20dp"
+        android:textSize="20sp"
+        android:layout_below="@+id/inputNick"
         android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"/>
     <RadioGroup
+        android:id="@+id/radio_sex"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp">
+        android:layout_below="@+id/text_sex"
+        android:layout_marginStart="40dp">
         <RadioButton
             android:id="@+id/male"
             android:layout_width="wrap_content"
@@ -74,10 +97,13 @@
 
     <EditText
         android:id="@+id/dateOfBirth"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="date"
+        android:width="350dp"
         android:hint="@string/nh_p_ng_y_sinh_c_a_b_n"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/radio_sex"
         android:layout_marginTop="10dp"/>
 
     <TextView
@@ -87,6 +113,7 @@
         android:textColor="@color/red"
         android:textSize="20sp"
         android:layout_marginTop="10dp"
+        android:layout_below="@id/dateOfBirth"
         android:textAlignment="center"/>
 
     <Button
@@ -97,7 +124,8 @@
         android:paddingStart="50dp"
         android:paddingEnd="50dp"
         android:background="@drawable/background_post_button"
-        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/notify"
         android:layout_marginTop="20dp"/>
 
-</LinearLayout>
+</RelativeLayout>

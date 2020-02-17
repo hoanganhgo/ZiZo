@@ -10,12 +10,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.zizo.HomeActivity;
+import com.example.zizo.MainActivity;
 import com.example.zizo.R;
 import com.example.zizo.adapter.CustomListAdapterStatus;
 import com.example.zizo.object.Comment;
@@ -36,29 +39,23 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Stack;
 
 public class ProfileFragment extends Fragment {
 
     private static final int PICKFILE_RESULT_CODE = 0;
 
-    private String mParam1;
-    private String mParam2;
     private DatabaseReference myRef;
-    private DatabaseReference refStatus;
     private StorageReference mStorageRef;
-    private Uri fileUri;
-    private String filePath;
     private String myEmail;
     private TextView nickName;
-    private Button btn_avatar;
     private TextView sumLikes;
     private TextView sumComments;
     private TextView sumFriends;
     private TextView sumFollows;
     private ImageView avatar;
     private ListView lv_status;
+    private ProgressBar progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,12 +69,15 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_profile, container, false);
 
         nickName=view.findViewById(R.id.nickName);
-        btn_avatar=view.findViewById(R.id.btn_avatar);
+        Button btn_avatar = view.findViewById(R.id.btn_avatar);
         avatar=view.findViewById(R.id.avatar);
         sumLikes=view.findViewById(R.id.sumLikes);
         sumComments=view.findViewById(R.id.sumComments);
         sumFriends=view.findViewById(R.id.sumFriends);
         sumFollows=view.findViewById(R.id.sumFollows);
+        progressBar=view.findViewById(R.id.progressBar_Profile);
+
+        MainActivity.startProgressBar(progressBar,30);
 
 
         //Lấy thông tin user
@@ -90,53 +90,69 @@ public class ProfileFragment extends Fragment {
         assert temp != null;
         myEmail=temp.replace('.','-');
 
-        //Lấy nickname
         myRef= FirebaseDatabase.getInstance().getReference("User").child(myEmail);
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String nickname=dataSnapshot.child("nickName").getValue().toString();
-                nickName.setText(nickname);
 
-                if (dataSnapshot.child("friends").exists())
-                {
-                    long sum_friends=dataSnapshot.child("friends").getChildrenCount();
-                    sumFriends.setText(Long.toString(sum_friends));
-                }else{
-                    sumFriends.setText("0");
-                }
+        Thread thread1=new Thread()
+        {
+          @Override
+          public void run()
+          {
+              //Lấy nickname
+              myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                  @Override
+                  public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                      String nickname=dataSnapshot.child("nickName").getValue().toString();
+                      nickName.setText(nickname);
 
-                if (dataSnapshot.child("follows").exists())
-                {
-                    long sum_follows=dataSnapshot.child("follows").getChildrenCount();
-                    sumFollows.setText(Long.toString(sum_follows));
-                }else{
-                    sumFollows.setText("0");
-                }
-            }
+                      if (dataSnapshot.child("friends").exists())
+                      {
+                          long sum_friends=dataSnapshot.child("friends").getChildrenCount();
+                          sumFriends.setText(Long.toString(sum_friends));
+                      }else{
+                          sumFriends.setText("0");
+                      }
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w("test", "Failed to read value.", error.toException());
-            }
-        });
+                      if (dataSnapshot.child("follows").exists())
+                      {
+                          long sum_follows=dataSnapshot.child("follows").getChildrenCount();
+                          sumFollows.setText(Long.toString(sum_follows));
+                      }else{
+                          sumFollows.setText("0");
+                      }
+                  }
 
-        //set avatar
-        myRef.child("avatar").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String url = dataSnapshot.getValue(String.class);
+                  @Override
+                  public void onCancelled(DatabaseError error) {
+                      // Failed to read value
+                      Log.w("test", "Failed to read value.", error.toException());
+                  }
+              });
+          }
+        };
+        thread1.start();
 
-                //Set avatar by Url
-                Picasso.get().load(url).into(avatar);
-            }
+        Thread thread2=new Thread(){
+          @Override
+          public void run(){
+              //set avatar
+              myRef.child("avatar").addListenerForSingleValueEvent(new ValueEventListener() {
+                  @Override
+                  public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                      String url = dataSnapshot.getValue(String.class);
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        });
+                      //Set avatar by Url
+                      float widthAvatar=300*(HomeActivity.widthPixels/720f);
+                      Picasso.get().load(url).resize((int)widthAvatar,0).into(avatar);
+                  }
+
+                  @Override
+                  public void onCancelled(DatabaseError error) {
+                      // Failed to read value
+                  }
+              });
+          }
+        };
+        thread2.start();
 
         //get and set avatar
         mStorageRef = FirebaseStorage.getInstance().getReference();
@@ -148,7 +164,7 @@ public class ProfileFragment extends Fragment {
                 chooseFile.setType("*/*");
                 chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
 
-                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                chooseFile = Intent.createChooser(chooseFile, "Chọn hình ảnh");
                 startActivityForResult(chooseFile, PICKFILE_RESULT_CODE);
             }
         });
@@ -157,64 +173,73 @@ public class ProfileFragment extends Fragment {
         lv_status=(ListView)view.findViewById(R.id.my_status_list);
 
         final ArrayList<Status> status_list=new ArrayList<Status>();
-        //add my status
-        refStatus=FirebaseDatabase.getInstance().getReference("Status");
-        refStatus.child(myEmail).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists())
-                {
-                    int sum_likes=0;
-                    int sum_comments=0;
-                    Stack<Status> stack =new Stack<Status>();
-                    for (DataSnapshot item: dataSnapshot.getChildren()) {
-                        String email=myEmail;
-                        String content=item.child("content").getValue().toString();
-                        String image = item.child("image").getValue().toString();
-//                        if (item.child("image").exists())
-//                        {
-//                            image = item.child("image").getValue().toString();
-//                        }
 
-                        ArrayList<String> likes=new ArrayList<>();
-                        for (DataSnapshot like: item.child("likes").getChildren())
-                        {
-                            likes.add(like.getValue().toString());
-                            //Log.e("test", like.getValue().toString());
-                        }
+        Thread thread3=new Thread(){
+          @Override
+          public void run(){
+              //add my status
+              DatabaseReference refStatus = FirebaseDatabase.getInstance().getReference("Status");
+              refStatus.child(myEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+                  @Override
+                  public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                      if (dataSnapshot.exists())
+                      {
+                          int sum_likes=0;
+                          int sum_comments=0;
+                          Stack<Status> stack =new Stack<Status>();
+                          for (DataSnapshot item: dataSnapshot.getChildren()) {
+                              String email=myEmail;
+                              String content=item.child("content").getValue().toString();
+                              String image = HomeActivity.imageDefault;
+                              if (item.child("image").exists())
+                              {
+                                  image = item.child("image").getValue().toString();
+                              }
 
-                        ArrayList<Comment> comments=new ArrayList<>();
-                        for (DataSnapshot comment : item.child("comments").getChildren())
-                        {
-                            comments.add(comment.getValue(Comment.class));
-                        }
+                              ArrayList<String> likes=new ArrayList<>();
+                              for (DataSnapshot like: item.child("likes").getChildren())
+                              {
+                                  likes.add(like.getValue().toString());
+                                  //Log.e("test", like.getValue().toString());
+                              }
 
-                        long time=Long.parseLong(item.child("dateTime").getValue().toString());
-                        Status status=new Status(email,content,image,time,likes,comments);
+                              ArrayList<Comment> comments=new ArrayList<>();
+                              for (DataSnapshot comment : item.child("comments").getChildren())
+                              {
+                                  comments.add(comment.getValue(Comment.class));
+                              }
 
-                        stack.push(status);
-                        sum_likes+=likes.size();
-                        sum_comments+=comments.size();
-                    }
+                              long time=Long.parseLong(item.child("dateTime").getValue().toString());
+                              Status status=new Status(email,content,image,time,likes,comments);
 
-                    while (!stack.isEmpty())
-                    {
-                        status_list.add(stack.pop());
-                    }
+                              stack.push(status);
+                              sum_likes+=likes.size();
+                              sum_comments+=comments.size();
+                          }
 
-                    //hiển thị tổng số like và comment
-                    sumLikes.setText(Integer.toString(sum_likes));
-                    sumComments.setText(Integer.toString(sum_comments));
+                          while (!stack.isEmpty())
+                          {
+                              status_list.add(stack.pop());
+                          }
 
-                    lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, myEmail));
-                }
-            }
+                          //hiển thị tổng số like và comment
+                          sumLikes.setText(Integer.toString(sum_likes));
+                          sumComments.setText(Integer.toString(sum_comments));
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                          lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, myEmail));
 
-            }
-        });
+                          MainActivity.finishProgressBar(progressBar);
+                      }
+                  }
+
+                  @Override
+                  public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                  }
+              });
+          }
+        };
+        thread3.start();
 
         return view;
     }
@@ -224,12 +249,10 @@ public class ProfileFragment extends Fragment {
         switch (requestCode) {
             case PICKFILE_RESULT_CODE:
                 if (resultCode == -1) {
-                    fileUri = data.getData();
-                    filePath = fileUri.getPath();
-                    Log.e("test", filePath);
+                    Uri fileUri = data.getData();
 
                     //Uri file = Uri.fromFile(new File("/document/image:100656"));
-                    String filename=myEmail+fileUri.getLastPathSegment()+".jpg";
+                    String filename=myEmail+ fileUri.getLastPathSegment()+".jpg";
                     StorageReference riversRef = mStorageRef.child("avatars").child(filename);
 
                     riversRef.putFile(fileUri)
@@ -238,9 +261,15 @@ public class ProfileFragment extends Fragment {
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                     // Get a URL to the uploaded content
                                     Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                                    while (!urlTask.isSuccessful());
+                                    while (!urlTask.isSuccessful()){
+                                        try {
+                                            Thread.sleep(50);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    };
                                     Uri downloadUrl = urlTask.getResult();
-                                    Log.e("test",downloadUrl.toString());
+                                    //Log.e("test",downloadUrl.toString());
 
                                     //Set avatar by Url
                                     Picasso.get().load(downloadUrl).into(avatar);
@@ -254,7 +283,7 @@ public class ProfileFragment extends Fragment {
                                 public void onFailure(@NonNull Exception exception) {
                                     // Handle unsuccessful uploads
                                     // ...
-                                    Log.e("test","Upload Fail");
+                                    //Log.e("test","Upload Fail");
                                 }
                             });
                 }

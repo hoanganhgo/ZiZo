@@ -7,16 +7,14 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,17 +36,18 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 
+import static com.example.zizo.HomeActivity.heightPixels;
+import static com.example.zizo.HomeActivity.widthPixels;
+
 public class PostActivity extends AppCompatActivity {
     private static final int PICKFILE_RESULT_CODE = 0;
 
     private EditText editContent;
     private ImageButton btnImage;
-    private Button btnPost;
+    private ProgressBar progressBar;
 
     private String email=null;
     private String urlImage=null;
-    private Uri fileUri=null;
-    private String filePath=null;
     private StorageReference mStorageRef=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +62,8 @@ public class PostActivity extends AppCompatActivity {
 
         editContent=(EditText)findViewById(R.id.edit_content);
         btnImage=(ImageButton)findViewById(R.id.edit_image);
-        btnPost=(Button)findViewById(R.id.btn_post);
+        Button btnPost = (Button) findViewById(R.id.btn_post);
+        progressBar=(ProgressBar)findViewById(R.id.progressBar_Post);
 
         //get and set avatar
         mStorageRef = FirebaseStorage.getInstance().getReference();
@@ -97,10 +97,6 @@ public class PostActivity extends AppCompatActivity {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("Status").child(email);
 
-                if (urlImage==null)
-                {
-                    urlImage="https://firebasestorage.googleapis.com/v0/b/zizo-9fdb5.appspot.com/o/default%2Fempty.png?alt=media&token=ecc7ef9c-98ee-4324-bf6b-e564d25ae7a6";
-                }
                 Status status=new Status(email,content,urlImage,dateTime,null,null);
                 myRef.push().setValue(status);
                 Toast.makeText(PostActivity.this,"Cảm nghĩ của bạn đã được đăng tải",Toast.LENGTH_LONG).show();
@@ -116,9 +112,9 @@ public class PostActivity extends AppCompatActivity {
         switch (requestCode) {
             case PICKFILE_RESULT_CODE:
                 if (resultCode == -1) {
-                    fileUri = data.getData();
-                    filePath = fileUri.getPath();
-                   // Log.e("test", filePath);
+                    MainActivity.startProgressBar(progressBar,150);
+
+                    Uri fileUri = data.getData();
 
                     //Uri file = Uri.fromFile(new File("/document/image:100656"));
                     String filename = email + fileUri.getLastPathSegment() + ".jpg";
@@ -130,32 +126,35 @@ public class PostActivity extends AppCompatActivity {
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                     // Get a URL to the uploaded content
                                     Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                                    while (!urlTask.isSuccessful()) ;
+                                    while (!urlTask.isSuccessful()){
+                                        try {
+                                            Thread.sleep(50);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    };
                                     Uri downloadUrl = urlTask.getResult();
                                     //Log.e("test", downloadUrl.toString());
 
                                     //Set Image by url
-                                    Picasso.get().load(downloadUrl).into(btnImage, new Callback() {
+                                    Picasso.get().load(downloadUrl).resize((int)widthPixels,0).into(btnImage, new Callback() {
                                         @Override
                                         public void onSuccess() {
-                                            DisplayMetrics displayMetrics = new DisplayMetrics();
-                                            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-                                            float widthPixels = displayMetrics.widthPixels;
-                                            float heightPixels=displayMetrics.heightPixels;
                                             // Get the ImageView and its bitmap
                                             Drawable drawing = btnImage.getDrawable();
                                             Bitmap bitmap = ((BitmapDrawable)drawing).getBitmap();
 
-                                            // Get current dimensions
                                             float width = bitmap.getWidth();
                                             float height = bitmap.getHeight();
-                                            Log.e("test","scale: "+(height/width));
-                                            if ((height/width)<1.35f)
+                                            //Log.e("test","scale: "+(height/width));
+                                            if ((height/width)<1.3f)
                                             {
                                                 scaleImage(btnImage, widthPixels);
                                             }else{
                                                 scaleImageHeight(btnImage,heightPixels);
                                             }
+
+                                            MainActivity.finishProgressBar(progressBar);
                                         }
 
                                         @Override
@@ -180,6 +179,13 @@ public class PostActivity extends AppCompatActivity {
 
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        HomeActivity.resetDiary=false;
+        finish();
     }
 
     public static void scaleImage(ImageView imageView, float widthPixels)
@@ -216,9 +222,8 @@ public class PostActivity extends AppCompatActivity {
         float scale= (heightPixels-350f)/height;
         float w=width*scale;
         //Log.e("test", "h:"+h);
-        int wImage=(int)w;
 
-        imageView.getLayoutParams().width=wImage;
+        imageView.getLayoutParams().width= (int)w;
         imageView.getLayoutParams().height=(int)(heightPixels-350f);
     }
 }

@@ -7,22 +7,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.zizo.ChatActivity;
-import com.example.zizo.InvitationActivity;
+import com.example.zizo.MainActivity;
 import com.example.zizo.R;
-import com.example.zizo.SearchActivity;
 import com.example.zizo.adapter.CustomListAdapterChatBox;
 import com.example.zizo.object.ChatBox;
 import com.example.zizo.object.MessageModel;
-import com.example.zizo.object.UserBasic;
-import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +37,7 @@ public class ChatBoxFragment extends Fragment {
     private String myEmail;
     private ArrayList<ChatBox> chatbox_list=null;
     private ArrayList<String> friends_email=new ArrayList<String>();
+    private ProgressBar progressBar;
 
     private int size=0;
 
@@ -55,6 +53,9 @@ public class ChatBoxFragment extends Fragment {
         final View view = inflater.inflate(R.layout.activity_chatbox, container, false);
 
         lv_chatbox=(ListView)view.findViewById(R.id.friends_list);
+        progressBar=view.findViewById(R.id.progressBar_ChatBox);
+
+        MainActivity.startProgressBar(progressBar,50);
 
         //Lấy thông tin user
         FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
@@ -68,10 +69,11 @@ public class ChatBoxFragment extends Fragment {
 
         //Lấy danh sách người dùng từ firebase
         final DatabaseReference myRef= FirebaseDatabase.getInstance().getReference().child("User");
+
         // Read from the database
         myRef.child(myEmail).child("chatBox").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 size=(int)dataSnapshot.getChildrenCount();
                 //Log.e("test123", String.valueOf(size));
                 for (DataSnapshot item: dataSnapshot.getChildren()) {
@@ -134,6 +136,8 @@ public class ChatBoxFragment extends Fragment {
 
                             chatbox_list.add(chatBox);
 
+                            messagesTheEnd.clear();
+
                             //Sau khi dữ liệu đã được thêm vào đầy đủ ta tiến hành setAdapter
                             if (chatbox_list.size()==size)
                             {
@@ -141,6 +145,7 @@ public class ChatBoxFragment extends Fragment {
                                 lv_chatbox.setAdapter(new CustomListAdapterChatBox(view.getContext(), chatbox_list));
                             }
 
+                            MainActivity.finishProgressBar(progressBar);
                             //Log.e("test123", friend.getAvatar()+"  "+friend.getRealTime()+"  "+friend.getNickName());
                         }
 
@@ -170,6 +175,13 @@ public class ChatBoxFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        friends_email.clear();
     }
 
     private String findFriend(String myEmail, String idChatBox)

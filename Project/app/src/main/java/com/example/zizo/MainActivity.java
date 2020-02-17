@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    final String TAG="signUp123";
+    //final String TAG="signUp123";
     Button btn_signUp;
     EditText username;
     EditText password;
@@ -33,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     Button btn_signIn;
 
     SharedPreferences sharedPreferences;
-    //ProgressBar progressBar;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,24 +47,33 @@ public class MainActivity extends AppCompatActivity {
         password=(EditText)findViewById(R.id.PassWord);
         saveUser=(CheckBox)findViewById(R.id.saveUserName);
         btn_signIn=(Button)findViewById(R.id.signIn_Click);
+        progressBar=(ProgressBar)findViewById(R.id.progressBar_Login);
+
 
         //Tải lại tài khoản và mật khẩu đã lưu
-        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        String savedUsername=sharedPreferences.getString("Username",null);
-        String savedPass=sharedPreferences.getString("PassWord",null);
+        Thread thread=new Thread(){
+            @Override
+            public void run(){
+                sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                String savedUsername=sharedPreferences.getString("Username",null);
+                String savedPass=sharedPreferences.getString("PassWord",null);
 
-        if (savedUsername!=null && savedPass!=null)
-        {
-            username.setText(savedUsername);
-            password.setText(savedPass);
-            saveUser.setChecked(true);
-        }
+                if (savedUsername!=null && savedPass!=null)
+                {
+                    username.setText(savedUsername);
+                    password.setText(savedPass);
+                    saveUser.setChecked(true);
+                }
+            }
+        };
+        thread.start();
 
         btn_signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (checkLogin(username.getText().toString(),password.getText().toString()))
                 {
+                    startProgressBar(progressBar,60);
                     String email=username.getText().toString()+"@zizo.com";
                     signIn(email, password.getText().toString());
                 }
@@ -89,28 +97,36 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
+                            //Log.d(TAG, "signInWithEmail:success");
                             Toast.makeText(MainActivity.this, "Đăng nhập thành công",
                                     Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
 
                             //Lưu tài khoản mật khẩu
-                            if (saveUser.isChecked()) {
-                                //sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                            Thread thread=new Thread(){
+                              @Override
+                              public void run()
+                              {
+                                  if (saveUser.isChecked()) {
+                                      //sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                      SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                                editor.putString("Username", username.getText().toString());
-                                editor.putString("PassWord", password);
-                                editor.apply();
-                            }
-                            else
-                            {
-                                //sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                      editor.putString("Username", username.getText().toString());
+                                      editor.putString("PassWord", password);
+                                      editor.apply();
+                                  }
+                                  else
+                                  {
+                                      //sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                      SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                                editor.clear();
-                                editor.apply();
-                            }
+                                      editor.clear();
+                                      editor.apply();
+                                  }
+                              }
+                            };
+
+                            thread.start();
 
                             //Chuyển màn hình
                             Intent intent=new Intent(MainActivity.this, HomeActivity.class);
@@ -118,7 +134,8 @@ public class MainActivity extends AppCompatActivity {
                            // updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            //Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            finishProgressBar(progressBar);
                             Toast.makeText(MainActivity.this, "Đăng nhập thất bại",
                                     Toast.LENGTH_SHORT).show();
                            // updateUI(null);
@@ -143,5 +160,34 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    public static void startProgressBar(final ProgressBar progressBar, final int maximum)
+    {
+        progressBar.setMax(maximum);
+        progressBar.setVisibility(View.VISIBLE);
+        Thread thread=new Thread(){
+          @Override
+          public void run(){
+              int progress=0;
+
+              while (progress<=maximum){
+                  progressBar.setProgress(progress++);
+                  try {
+                      sleep(50);
+                  } catch (InterruptedException e) {
+                      e.printStackTrace();
+                  }
+              }
+
+              progressBar.setVisibility(View.INVISIBLE);
+          }
+        };
+        thread.start();
+    }
+
+    public static void finishProgressBar(final ProgressBar progressBar)
+    {
+        progressBar.setVisibility(View.INVISIBLE);
     }
 }

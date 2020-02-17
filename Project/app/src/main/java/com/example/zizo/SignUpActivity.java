@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,8 +36,8 @@ public class SignUpActivity extends AppCompatActivity {
     private RadioButton female;
     private EditText dateOfBirth;
     private TextView notify;
-    private Button btn_signUp;
-    final String TAG="signUp123";
+    private ProgressBar progressBar;
+    //final String TAG="signUp123";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -56,7 +56,8 @@ public class SignUpActivity extends AppCompatActivity {
         female=(RadioButton)findViewById(R.id.female);
         dateOfBirth=(EditText)findViewById(R.id.dateOfBirth);
         notify=(TextView)findViewById(R.id.notify);
-        btn_signUp=(Button)findViewById(R.id.signUp_Click);
+        Button btn_signUp = (Button) findViewById(R.id.signUp_Click);
+        progressBar=(ProgressBar)findViewById(R.id.progressBar_register);
 
         btn_signUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +65,8 @@ public class SignUpActivity extends AppCompatActivity {
                 if (checkSignUp(username.getText().toString(),password.getText().toString(),rePassword.getText().toString(),
                         nickName.getText().toString(),male.isChecked() | female.isChecked(),dateOfBirth.getText().toString()))
                 {
+                    MainActivity.startProgressBar(progressBar,80);
+
                     String email=username.getText().toString()+"@zizo.com";
                     register(email, password.getText().toString());
                 }
@@ -80,7 +83,7 @@ public class SignUpActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
+                            //Log.d(TAG, "createUserWithEmail:success");
 
                             //Upload User
                             String sex="";
@@ -104,7 +107,8 @@ public class SignUpActivity extends AppCompatActivity {
                             //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            //Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            MainActivity.finishProgressBar(progressBar);
                             Toast.makeText(SignUpActivity.this, "Tạo tài khoản thất bại",
                                     Toast.LENGTH_SHORT).show();
                             //updateUI(null);

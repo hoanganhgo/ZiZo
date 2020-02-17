@@ -1,15 +1,11 @@
 package com.example.zizo;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.net.sip.SipSession;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,13 +31,13 @@ public class UserActivity extends AppCompatActivity {
 
     private DatabaseReference myRef=null;
     private DatabaseReference otherRef=null;
-    private DatabaseReference refStatus=null;
 
     private de.hdodenhof.circleimageview.CircleImageView avatar;
     private TextView nickName;
     private Button addFriend;
     private Button addFollow;
     private ListView lv_status;
+    private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +50,9 @@ public class UserActivity extends AppCompatActivity {
         nickName=(TextView)findViewById(R.id.nickName);
         addFriend=(Button)findViewById(R.id.addFriend);
         addFollow=(Button)findViewById(R.id.addFollow);
+        progressBar=(ProgressBar)findViewById(R.id.progressBar_User);
+
+        MainActivity.startProgressBar(progressBar,30);
 
         //Lấy email người mình truy cập đến
         Intent intent=getIntent();
@@ -196,7 +195,7 @@ public class UserActivity extends AppCompatActivity {
 
         final ArrayList<Status> status_list=new ArrayList<Status>();
         //add my status
-        refStatus=FirebaseDatabase.getInstance().getReference("Status");
+        DatabaseReference refStatus = FirebaseDatabase.getInstance().getReference("Status");
         refStatus.child(email).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -205,11 +204,11 @@ public class UserActivity extends AppCompatActivity {
                     Stack<Status> stack =new Stack<Status>();
                     for (DataSnapshot item: dataSnapshot.getChildren()) {
                         String content=item.child("content").getValue().toString();
-                        String image = item.child("image").getValue().toString();
-//                        if (item.child("image").exists())
-//                        {
-//                            image = item.child("image").getValue().toString();
-//                        }
+                        String image = HomeActivity.imageDefault;
+                        if (item.child("image").exists())
+                        {
+                            image = item.child("image").getValue().toString();
+                        }
 
                         ArrayList<String> likes=new ArrayList<>();
                         for (DataSnapshot like: item.child("likes").getChildren())
@@ -236,6 +235,8 @@ public class UserActivity extends AppCompatActivity {
                     }
 
                     lv_status.setAdapter(new CustomListAdapterStatus(getApplication(),status_list, finalMyEmail));
+
+                    MainActivity.finishProgressBar(progressBar);
                 }
             }
 

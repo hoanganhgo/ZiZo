@@ -1,18 +1,17 @@
 package com.example.zizo;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.zizo.adapter.CustomListAdapterUserBasic;
@@ -32,6 +31,7 @@ public class SearchActivity extends AppCompatActivity {
     private ArrayList<String> invitations=new ArrayList<>();
     private ArrayList<String> suggested_users=new ArrayList<>();
     private GridView gv_suggestions;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +44,9 @@ public class SearchActivity extends AppCompatActivity {
 
         final AutoCompleteTextView search=findViewById(R.id.search_friends);
         gv_suggestions=findViewById(R.id.suggestion_list);
+        progressBar=(ProgressBar)findViewById(R.id.progressBar_Search);
+
+        MainActivity.startProgressBar(progressBar,30);
 
         //Lấy danh sách người dùng từ firebase
         final DatabaseReference myRef= FirebaseDatabase.getInstance().getReference().child("User");
@@ -92,7 +95,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot item: dataSnapshot.getChildren()) {
-                    Log.e("test123", item.getKey());
+                    //Log.e("test123", item.getKey());
                     String email=item.getKey();
                     if (email.contentEquals(myEmail)){
                         continue;
@@ -132,14 +135,16 @@ public class SearchActivity extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             String avatar=dataSnapshot.child("avatar").getValue(String.class);
                             String nickName=dataSnapshot.child("nickName").getValue(String.class);
-                            Log.e("test","suggest: "+nickName);
+                            //Log.e("test","suggest: "+nickName);
                             UserBasic userBasic=new UserBasic(email,avatar,nickName);
                             data.add(userBasic);
                             if (count[0]==suggested_users.size())
                             {
-                                Log.e("test","Set Adapter");
+                                //Log.e("test","Set Adapter");
                                 //Cai dat gridView
                                 gv_suggestions.setAdapter(new CustomListAdapterUserBasic(getApplication(),data, myEmail));
+
+                                MainActivity.finishProgressBar(progressBar);
                             }else
                             {
                                 count[0]=count[0]+1;
@@ -184,5 +189,15 @@ public class SearchActivity extends AppCompatActivity {
     {
         int tail = email.indexOf('@');
         return email.substring(0,tail);
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        users.clear();
+        friends.clear();
+        invitations.clear();
+        suggested_users.clear();
     }
 }

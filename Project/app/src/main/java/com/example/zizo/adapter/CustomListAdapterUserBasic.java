@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.zizo.HomeActivity;
 import com.example.zizo.R;
 import com.example.zizo.UserActivity;
 import com.example.zizo.object.UserBasic;
@@ -73,7 +74,9 @@ public class CustomListAdapterUserBasic extends BaseAdapter {
         }
 
         final UserBasic model=this.listData.get(position);
-        Picasso.get().load(model.getAvatar()).into(holder.avatar);
+
+        float widthAvatar=250*(HomeActivity.widthPixels/720f);
+        Picasso.get().load(model.getAvatar()).resize((int)widthAvatar,0).into(holder.avatar);
         holder.nickName.setText(model.getNickName());
 
         final DatabaseReference otherRef= FirebaseDatabase.getInstance().getReference("User").child(model.getEmail());
@@ -100,7 +103,7 @@ public class CustomListAdapterUserBasic extends BaseAdapter {
         holder.addFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("test","Click addFriend");
+                //Log.e("test","Click addFriend");
                 String status=holder.addFriend.getText().toString();
                 if (status.contentEquals("Kết bạn"))
                 {
@@ -118,7 +121,7 @@ public class CustomListAdapterUserBasic extends BaseAdapter {
         holder.goTo_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("test", "Click: "+model.getNickName());
+                //Log.e("test", "Click: "+model.getNickName());
                 Intent intent=new Intent(context, UserActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("email",model.getEmail());

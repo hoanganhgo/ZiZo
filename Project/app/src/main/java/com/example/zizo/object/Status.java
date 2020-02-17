@@ -60,6 +60,21 @@ public class Status {
         this.likes = likes;
     }
 
+    public void addLike(String email)
+    {
+        this.likes.add(email);
+    }
+
+    public void removeLike(String email)
+    {
+        this.likes.remove(email);
+    }
+
+    public void initLikes()
+    {
+        this.likes=new ArrayList<String>();
+    }
+
     public ArrayList<Comment> getComments() {
         return comments;
     }

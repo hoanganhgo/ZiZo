@@ -1,16 +1,14 @@
 package com.example.zizo;
 
 import android.content.Intent;
-import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,11 +34,15 @@ public class ChatActivity extends AppCompatActivity {
     private int kindUser=0;
     private String idChatBox="";
     private String urlAvatar=null;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_chat);
+
+        progressBar=(ProgressBar)findViewById(R.id.progressBar_Chat);
+        MainActivity.startProgressBar(progressBar,35);
 
         //Lấy thông tin đăng nhập
         FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
@@ -57,60 +59,73 @@ public class ChatActivity extends AppCompatActivity {
         // Read from the database
         myRef=FirebaseDatabase.getInstance().getReference("User");
 
-        //Set title
-        myRef.child(friend).child("nickName").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String nickName=dataSnapshot.getValue(String.class);
-                setTitle(nickName);
-            }
+        Thread thread1=new Thread(){
+          @Override
+          public void run()
+          {
+              //Set title
+              myRef.child(friend).child("nickName").addListenerForSingleValueEvent(new ValueEventListener() {
+                  @Override
+                  public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                      String nickName=dataSnapshot.getValue(String.class);
+                      setTitle(nickName);
+                  }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                  @Override
+                  public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                  }
+              });
+          }
+        };
+        thread1.start();
 
         //Read Chat Box
-        myRef.child(myEmail).child("chatBox").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot item : dataSnapshot.getChildren())
-                {
-                    //Log.d("test123", "Value is: " + item.getValue());
-                    if (id1.contentEquals(item.getValue().toString()))
-                    {
-                        idChatBox=id1;
-                        kindUser=findKindUser(myEmail,idChatBox);
-                        existChatBox=true;
+        Thread thread2=new Thread(){
+          @Override
+          public void run(){
+              myRef.child(myEmail).child("chatBox").addListenerForSingleValueEvent(new ValueEventListener() {
+                  @Override
+                  public void onDataChange(DataSnapshot dataSnapshot) {
+                      for (DataSnapshot item : dataSnapshot.getChildren())
+                      {
+                          //Log.d("test123", "Value is: " + item.getValue());
+                          if (id1.contentEquals(item.getValue().toString()))
+                          {
+                              idChatBox=id1;
+                              kindUser=findKindUser(myEmail,idChatBox);
+                              existChatBox=true;
 
-                        loadAvatarOfFriend(myEmail, idChatBox);
-                        //displayChatMessages();
-                        return;
-                    }
-                }
+                              loadAvatarOfFriend(myEmail, idChatBox);
+                              //displayChatMessages();
+                              return;
+                          }
+                      }
 
-                for (DataSnapshot item : dataSnapshot.getChildren())
-                {
-                    //Log.d("test123", "Value is: " + item.getValue());
-                    if (id2.contentEquals(item.getValue().toString()))
-                    {
-                        idChatBox=id2;
-                        kindUser=findKindUser(myEmail,idChatBox);
-                        existChatBox=true;
+                      for (DataSnapshot item : dataSnapshot.getChildren())
+                      {
+                          //Log.d("test123", "Value is: " + item.getValue());
+                          if (id2.contentEquals(item.getValue().toString()))
+                          {
+                              idChatBox=id2;
+                              kindUser=findKindUser(myEmail,idChatBox);
+                              existChatBox=true;
 
-                        loadAvatarOfFriend(myEmail, idChatBox);
-                        //displayChatMessages();
-                        return;
-                    }
-                }
-            }
+                              loadAvatarOfFriend(myEmail, idChatBox);
+                              //displayChatMessages();
+                              return;
+                          }
+                      }
+                  }
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        });
+                  @Override
+                  public void onCancelled(DatabaseError error) {
+                      // Failed to read value
+                  }
+              });
+          }
+        };
+        thread2.start();
 
         // gửi tin nhắn
         ImageButton btnSend = (ImageButton) findViewById(R.id.btnSend);
@@ -133,7 +148,6 @@ public class ChatActivity extends AppCompatActivity {
                     kindUser=findKindUser(myEmail,idChatBox);
 
                     myRef.child(myEmail).child("chatBox").push().setValue(idChatBox);
-                    assert friend != null;
                     myRef.child(friend).child("chatBox").push().setValue(idChatBox);
                     existChatBox=true;
 
@@ -200,7 +214,8 @@ public class ChatActivity extends AppCompatActivity {
                     messageTime.setVisibility(View.VISIBLE);
 
                     //Set avatar by Url
-                    Picasso.get().load(urlAvatar).into(avatarSender);
+                    float widthAvatar=150*(HomeActivity.widthPixels/720f);
+                    Picasso.get().load(urlAvatar).resize((int)widthAvatar,0).into(avatarSender);
                     messageText.setText(model.getContent());
                     // Format the date before showing it
                     messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)",
@@ -213,6 +228,8 @@ public class ChatActivity extends AppCompatActivity {
 
         ListView listOfMessages = (ListView)findViewById(R.id.messages_list);
         listOfMessages.setAdapter(adapter);
+
+        MainActivity.finishProgressBar(progressBar);
     }
 
     //return 1 if me. Return 2 if friend
@@ -250,21 +267,28 @@ public class ChatActivity extends AppCompatActivity {
             email=s1;
         }
 
-        myRef.child(email).child("avatar").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String value = dataSnapshot.getValue(String.class);
-                //Log.e("test123",value);
-                urlAvatar=value;
+        final String finalEmail = email;
+        Thread thread=new Thread(){
+          @Override
+          public void run(){
+              myRef.child(finalEmail).child("avatar").addValueEventListener(new ValueEventListener() {
+                  @Override
+                  public void onDataChange(DataSnapshot dataSnapshot) {
+                      String value = dataSnapshot.getValue(String.class);
+                      //Log.e("test123",value);
+                      urlAvatar=value;
 
-                //Sau khi có được URL avatar ta sẽ load màn hình chat lên
-                displayChatMessages();
-            }
+                      //Sau khi có được URL avatar ta sẽ load màn hình chat lên
+                      displayChatMessages();
+                  }
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        });
+                  @Override
+                  public void onCancelled(DatabaseError error) {
+                      // Failed to read value
+                  }
+              });
+          }
+        };
+        thread.start();
     }
 }

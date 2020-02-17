@@ -1,22 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <ProgressBar
+        android:id="@+id/progressBar_Search"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:indeterminate="false"
+        android:progressDrawable="@drawable/circular_progress_bar"
+        android:background="@drawable/circle_shape"
+        android:elevation="1dp"
+        android:layout_centerInParent="true"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:max="100"
+        android:visibility="invisible"
+        android:progress="0" />
 
     <AutoCompleteTextView
         android:id="@+id/search_friends"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:elevation="0dp"
         android:hint="@string/t_m_b_n_b_b_ng_t_n_t_i_kho_n"
         android:textSize="20sp"
         android:completionThreshold="1"
         />
     <TextView
+        android:id="@+id/text_suggestion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/g_i_k_t_b_n"
         android:textSize="25sp"
+        android:layout_below="@id/search_friends"
         android:gravity="center"
         android:textColor="@color/sky"
         android:layout_marginBottom="10dp"/>
@@ -27,6 +44,7 @@
         android:horizontalSpacing="1dp"
         android:verticalSpacing="1dp"
         android:columnWidth="120dp"
-        android:gravity="center"
+        android:layout_below="@+id/text_suggestion"
+        android:layout_centerHorizontal="true"
         android:numColumns="auto_fit"/>
-</LinearLayout>
+</RelativeLayout>

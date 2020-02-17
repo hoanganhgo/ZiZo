@@ -7,11 +7,12 @@ public class UserBasic {
     private String nickName;
     private String email;
 
-    public UserBasic(String avatar, boolean online, String nickName)
+    public UserBasic(String email, String avatar, boolean online, String nickName)
     {
         this.avatar=avatar;
         this.online=online;
         this.nickName=nickName;
+        this.email=email;
     }
 
     public UserBasic(String email, String avatar, String nickName)
