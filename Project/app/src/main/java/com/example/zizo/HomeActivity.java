@@ -1,12 +1,16 @@
 package com.example.zizo;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -37,10 +41,42 @@ public class HomeActivity extends AppCompatActivity {
     private ProfileFragment profileFragment;
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_profile, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.logout:
+                //Logout
+                auth.signOut();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+
+                Toast.makeText(HomeActivity.this, "Đăng xuất thành công",
+                        Toast.LENGTH_SHORT).show();
+                break;
+
+            default:break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onCreate(Bundle saveInstanceState)
     {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_home);
+
+        //Action bar
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.hide();
 
         Thread threadGetSizeScreen=new Thread(){
             @Override
@@ -118,16 +154,37 @@ public class HomeActivity extends AppCompatActivity {
                 }
             };
 
+    int pressExit=0;
     @Override
     public void onBackPressed()
     {
-        auth.signOut();
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        if (pressExit>=1){
+            //Logout
+            auth.signOut();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
 
-        Toast.makeText(HomeActivity.this, "Đăng xuất thành công",
-                Toast.LENGTH_SHORT).show();
+            //Toast.makeText(HomeActivity.this, "Đăng xuất thành công",
+            //        Toast.LENGTH_SHORT).show();
+        }
+        else{
+            pressExit++;
+            Toast.makeText(HomeActivity.this, "Bấm lần nữa để thoát",
+                    Toast.LENGTH_SHORT).show();
+            Thread thread=new Thread(){
+              @Override
+              public void run(){
+                  try {
+                      sleep(5000);
+                  } catch (InterruptedException e) {
+                      e.printStackTrace();
+                  }
+                  pressExit=0;
+              }
+            };
+            thread.start();
+        }
     }
 
 }

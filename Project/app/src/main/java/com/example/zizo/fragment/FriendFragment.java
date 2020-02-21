@@ -13,6 +13,8 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.zizo.ChatActivity;
@@ -47,6 +49,8 @@ public class FriendFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //do nothing
+        AppCompatActivity activity=(AppCompatActivity)getActivity();
+        activity.getSupportActionBar().hide();
     }
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,@Nullable ViewGroup container,

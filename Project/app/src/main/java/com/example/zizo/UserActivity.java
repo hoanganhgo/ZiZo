@@ -1,7 +1,11 @@
 package com.example.zizo;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -9,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.zizo.adapter.CustomListAdapterStatus;
@@ -38,10 +43,26 @@ public class UserActivity extends AppCompatActivity {
     private Button addFollow;
     private ListView lv_status;
     private ProgressBar progressBar;
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
+
+        //Action bar
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         //Lấy thông tin đăng nhập
         FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
@@ -166,9 +187,31 @@ public class UserActivity extends AppCompatActivity {
                 }
                 else if (status.contentEquals("Bạn bè"))
                 {
-                    addFriend.setText("Kết bạn");
-                    removeEmailToList(email, myRef.child("friends"));
-                    removeEmailToList(finalMyEmail, otherRef.child("friends"));
+                    AlertDialog.Builder builder = new AlertDialog.Builder(UserActivity.this);
+                    builder.setTitle("Hủy kết bạn");
+                    builder.setMessage("Bạn thật sự muốn hủy kết bạn");
+                    builder.setCancelable(true);
+
+                    builder.setPositiveButton(
+                            "Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    addFriend.setText("Kết bạn");
+                                    removeEmailToList(email, myRef.child("friends"));
+                                    removeEmailToList(finalMyEmail, otherRef.child("friends"));
+                                }
+                            });
+
+                    builder.setNegativeButton(
+                            "No",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
                 }
             }
         });

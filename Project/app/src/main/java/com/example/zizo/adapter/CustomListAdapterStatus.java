@@ -91,53 +91,46 @@ public class CustomListAdapterStatus extends BaseAdapter {
         final int[] sumOfLikes = {0};
         final int[] sumOfComments={0};
 
-        Thread thread1=new Thread(){
-            @Override
-            public void run()
+        //Get Số lượt comments
+        if (status.getComments()!=null)
+        {
+            sumOfComments[0]=status.getComments().size();
+            int amount=status.getComments().size();
+            holder.amountOfComments.setText(Integer.toString(amount));
+        }else
+        {
+            holder.amountOfComments.setText("0");
+        }
+
+        //Kiểm tra xem status đã được like chưa
+        if (status.getLikes()!=null)
+        {
+            boolean liked=false;
+            for (String item : status.getLikes())
             {
-                //Get Số lượt comments
-                if (status.getComments()!=null)
+                if (myEmail.contentEquals(item))
                 {
-                    sumOfComments[0]=status.getComments().size();
-                    int amount=status.getComments().size();
-                    holder.amountOfComments.setText(Integer.toString(amount));
-                }else
-                {
-                    holder.amountOfComments.setText("0");
-                }
-
-                //Kiểm tra xem status đã được like chưa
-                if (status.getLikes()!=null)
-                {
-                    boolean liked=false;
-                    for (String item : status.getLikes())
-                    {
-                        if (myEmail.contentEquals(item))
-                        {
-                            liked=true;
-                        }
-                    }
-
-                    if (liked)
-                    {
-                        holder.like.setTag(Boolean.TRUE);
-                        holder.like.setBackgroundResource(R.drawable.pink_heart);
-                    }
-                    else{
-                        holder.like.setTag(Boolean.FALSE);
-                        holder.like.setBackgroundResource(R.drawable.heart);
-                    }
-                    sumOfLikes[0]=status.getLikes().size();
-                    int amount=status.getLikes().size();
-                    holder.amountOfLikes.setText(Integer.toString(amount));
-                }else{
-                    holder.like.setTag(Boolean.FALSE);
-                    holder.like.setBackgroundResource(R.drawable.heart);
-                    holder.amountOfLikes.setText("0");
+                    liked=true;
                 }
             }
-        };
-        thread1.start();
+
+            if (liked)
+            {
+                holder.like.setTag(Boolean.TRUE);
+                holder.like.setBackgroundResource(R.drawable.pink_heart);
+            }
+            else{
+                holder.like.setTag(Boolean.FALSE);
+                holder.like.setBackgroundResource(R.drawable.heart);
+            }
+            sumOfLikes[0]=status.getLikes().size();
+            int amount=status.getLikes().size();
+            holder.amountOfLikes.setText(Integer.toString(amount));
+        }else{
+            holder.like.setTag(Boolean.FALSE);
+            holder.like.setBackgroundResource(R.drawable.heart);
+            holder.amountOfLikes.setText("0");
+        }
 
         // Read from the database
         Thread thread2=new Thread()

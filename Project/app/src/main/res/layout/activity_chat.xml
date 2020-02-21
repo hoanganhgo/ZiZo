@@ -57,5 +57,6 @@
         android:divider="@android:color/transparent"
         android:layout_marginBottom="16dp"
         android:transcriptMode="alwaysScroll"
-        android:stackFromBottom="true" />
+        android:stackFromBottom="true"
+        android:scrollbars="none"/>
 </RelativeLayout>
