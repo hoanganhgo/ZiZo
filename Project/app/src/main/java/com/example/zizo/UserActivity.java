@@ -3,6 +3,7 @@ package com.example.zizo;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -63,6 +64,8 @@ public class UserActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
+        Drawable drawable= getDrawable(R.drawable.background_title);
+        actionBar.setBackgroundDrawable(drawable);
 
         //Lấy thông tin đăng nhập
         FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
@@ -193,7 +196,7 @@ public class UserActivity extends AppCompatActivity {
                     builder.setCancelable(true);
 
                     builder.setPositiveButton(
-                            "Yes",
+                            "Đồng ý",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     addFriend.setText("Kết bạn");
@@ -203,7 +206,7 @@ public class UserActivity extends AppCompatActivity {
                             });
 
                     builder.setNegativeButton(
-                            "No",
+                            "Không",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
@@ -277,7 +280,7 @@ public class UserActivity extends AppCompatActivity {
                         status_list.add(stack.pop());
                     }
 
-                    lv_status.setAdapter(new CustomListAdapterStatus(getApplication(),status_list, finalMyEmail));
+                    lv_status.setAdapter(new CustomListAdapterStatus(getApplication(),status_list, finalMyEmail, false));
 
                     MainActivity.finishProgressBar(progressBar);
                 }

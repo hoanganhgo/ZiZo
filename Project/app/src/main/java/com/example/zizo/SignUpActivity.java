@@ -1,6 +1,7 @@
 package com.example.zizo;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -61,6 +62,8 @@ public class SignUpActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
+        Drawable drawable= getDrawable(R.drawable.background_title);
+        actionBar.setBackgroundDrawable(drawable);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();

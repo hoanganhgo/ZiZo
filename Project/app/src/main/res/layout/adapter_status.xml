@@ -25,6 +25,18 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"/>
 
+    <ImageButton
+        android:id="@+id/btn_delete_status"
+        android:layout_width="32sp"
+        android:layout_height="32sp"
+        android:background="@drawable/background_click"
+        android:src="@drawable/trash"
+        android:scaleType="fitXY"
+        android:layout_alignParentEnd="true"
+        android:visibility="invisible"
+        android:layout_marginTop="5sp"
+        android:layout_marginEnd="5sp"/>
+
     <TextView
         android:id="@+id/time_post"
         android:layout_width="wrap_content"

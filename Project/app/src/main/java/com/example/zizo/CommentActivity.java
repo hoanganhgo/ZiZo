@@ -1,6 +1,7 @@
 package com.example.zizo;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -53,6 +54,8 @@ public class CommentActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
+        Drawable drawable= getDrawable(R.drawable.background_title);
+        actionBar.setBackgroundDrawable(drawable);
 
         TextView likes = (TextView) findViewById(R.id.likes);
         TextView comments = (TextView) findViewById(R.id.comments);

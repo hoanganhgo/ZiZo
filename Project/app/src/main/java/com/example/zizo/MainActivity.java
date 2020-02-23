@@ -143,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
                             //Log.d(TAG, "signInWithEmail:success");
                             Toast.makeText(MainActivity.this, "Đăng nhập thành công",
                                     Toast.LENGTH_SHORT).show();
-                            FirebaseUser user = mAuth.getCurrentUser();
 
                             //Lưu tài khoản mật khẩu
                             Thread thread=new Thread(){
@@ -156,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
                                       editor.putString("Username", username.getText().toString());
                                       editor.putString("PassWord", password);
+                                      editor.putBoolean("AutoLogin", true);
                                       editor.apply();
                                   }
                                   else
@@ -232,5 +232,11 @@ public class MainActivity extends AppCompatActivity {
     public static void finishProgressBar(final ProgressBar progressBar)
     {
         progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        this.finishAffinity();
     }
 }

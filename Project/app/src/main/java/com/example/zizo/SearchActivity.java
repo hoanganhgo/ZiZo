@@ -1,6 +1,7 @@
 package com.example.zizo;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -54,6 +55,8 @@ public class SearchActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
+        Drawable drawable= getDrawable(R.drawable.background_title);
+        actionBar.setBackgroundDrawable(drawable);
 
         //Lay my Email
         Intent intent=getIntent();

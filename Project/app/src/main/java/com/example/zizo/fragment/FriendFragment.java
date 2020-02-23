@@ -49,14 +49,15 @@ public class FriendFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //do nothing
-        AppCompatActivity activity=(AppCompatActivity)getActivity();
-        activity.getSupportActionBar().hide();
     }
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,@Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.activity_friends, container, false);
+
+        AppCompatActivity activity=(AppCompatActivity)getActivity();
+        activity.getSupportActionBar().hide();
 
         ImageButton btn_search = (ImageButton) view.findViewById(R.id.button_search);
         ImageButton btn_invitation = (ImageButton) view.findViewById(R.id.button_invitation);

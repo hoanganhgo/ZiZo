@@ -1,6 +1,7 @@
 package com.example.zizo;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,6 +46,8 @@ public class InvitationActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
+        Drawable drawable= getDrawable(R.drawable.background_title);
+        actionBar.setBackgroundDrawable(drawable);
 
         //Lấy thông tin đăng nhập
         FirebaseUser users= FirebaseAuth.getInstance().getCurrentUser();

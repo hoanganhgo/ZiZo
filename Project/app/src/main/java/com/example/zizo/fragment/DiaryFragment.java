@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -47,8 +48,6 @@ public class DiaryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //do nothing
-        AppCompatActivity activity=(AppCompatActivity)getActivity();
-        activity.getSupportActionBar().hide();
     }
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -56,9 +55,12 @@ public class DiaryFragment extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.activity_diary, container, false);
 
+        AppCompatActivity activity=(AppCompatActivity)getActivity();
+        activity.getSupportActionBar().hide();
+
         //Set ListView Status
         lv_status=(ListView)view.findViewById(R.id.diary);
-        Button btn_post = view.findViewById(R.id.btn_post);
+        ImageButton btn_post = view.findViewById(R.id.btn_post);
         progressBar=(ProgressBar)view.findViewById(R.id.progressBar_Diary);
 
         MainActivity.startProgressBar(progressBar,80);
@@ -201,7 +203,7 @@ public class DiaryFragment extends Fragment {
                                       {
                                           sortStatus(status_list);
 
-                                          lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, myEmail));
+                                          lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, myEmail, false));
                                           //Log.e("test","finish");
                                           MainActivity.finishProgressBar(progressBar);
                                       }

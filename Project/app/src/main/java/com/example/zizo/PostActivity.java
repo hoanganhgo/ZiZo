@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.zizo.object.Status;
@@ -47,12 +49,30 @@ public class PostActivity extends AppCompatActivity {
     private ProgressBar progressBar;
 
     private String email=null;
-    private String urlImage=null;
     private StorageReference mStorageRef=null;
+    private Uri fileUri=null;
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
+
+        //Action bar
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        Drawable drawable= getDrawable(R.drawable.background_title);
+        actionBar.setBackgroundDrawable(drawable);
 
         FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
         if (user!=null)
@@ -85,38 +105,16 @@ public class PostActivity extends AppCompatActivity {
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Log.e("test",email);
-               // Log.e("test",urlImage);
-                //Log.e("test",editContent.getText().toString());
+
+                MainActivity.startProgressBar(progressBar,150);
                 media.start();
 
-                String content=editContent.getText().toString();
-                long dateTime=(new Date()).getTime();
+                final String content=editContent.getText().toString();
+                final long dateTime=(new Date()).getTime();
 
-                // Write a message to the database
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference("Status").child(email);
-
-                Status status=new Status(email,content,urlImage,dateTime,null,null);
-                myRef.push().setValue(status);
-                Toast.makeText(PostActivity.this,"Cảm nghĩ của bạn đã được đăng tải",Toast.LENGTH_LONG).show();
-                finish();
-            }
-        });
-
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case PICKFILE_RESULT_CODE:
-                if (resultCode == -1) {
-                    MainActivity.startProgressBar(progressBar,150);
-
-                    Uri fileUri = data.getData();
-
-                    //Uri file = Uri.fromFile(new File("/document/image:100656"));
+                if (fileUri!=null)
+                {
+                    //Upload image
                     String filename = email + fileUri.getLastPathSegment() + ".jpg";
                     StorageReference riversRef = mStorageRef.child("images").child(filename);
 
@@ -140,21 +138,7 @@ public class PostActivity extends AppCompatActivity {
                                     Picasso.get().load(downloadUrl).resize((int)widthPixels,0).into(btnImage, new Callback() {
                                         @Override
                                         public void onSuccess() {
-                                            // Get the ImageView and its bitmap
-                                            Drawable drawing = btnImage.getDrawable();
-                                            Bitmap bitmap = ((BitmapDrawable)drawing).getBitmap();
 
-                                            float width = bitmap.getWidth();
-                                            float height = bitmap.getHeight();
-                                            //Log.e("test","scale: "+(height/width));
-                                            if ((height/width)<1.3f)
-                                            {
-                                                scaleImage(btnImage, widthPixels);
-                                            }else{
-                                                scaleImageHeight(btnImage,heightPixels);
-                                            }
-
-                                            MainActivity.finishProgressBar(progressBar);
                                         }
 
                                         @Override
@@ -163,8 +147,20 @@ public class PostActivity extends AppCompatActivity {
                                         }
                                     });
 
+
                                     //set images url
-                                    urlImage = downloadUrl.toString();
+                                    String urlImage = downloadUrl.toString();
+
+                                    // Write a message to the database
+                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                    DatabaseReference myRef = database.getReference("Status").child(email);
+                                    Status status=new Status(email,content,urlImage,dateTime,null,null);
+                                    myRef.push().setValue(status);
+
+                                    MainActivity.finishProgressBar(progressBar);
+
+                                    Toast.makeText(PostActivity.this,"Cảm nghĩ của bạn đã được đăng tải",Toast.LENGTH_LONG).show();
+                                    finish();
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
@@ -175,6 +171,45 @@ public class PostActivity extends AppCompatActivity {
                                     Log.e("test", "Upload Fail");
                                 }
                             });
+                }
+                else
+                {
+                    // Write a message to the database
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference("Status").child(email);
+                    Status status=new Status(email,content,null,dateTime,null,null);
+                    myRef.push().setValue(status);
+
+                    MainActivity.finishProgressBar(progressBar);
+
+                    Toast.makeText(PostActivity.this,"Cảm nghĩ của bạn đã được đăng tải",Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PICKFILE_RESULT_CODE:
+                if (resultCode == -1) {
+                    fileUri = data.getData();
+                    btnImage.setImageURI(fileUri);
+                    Drawable drawing = btnImage.getDrawable();
+                    Bitmap bitmap = ((BitmapDrawable)drawing).getBitmap();
+
+                    float width = bitmap.getWidth();
+                    float height = bitmap.getHeight();
+                    //Log.e("test","scale: "+(height/width));
+                    if ((height/width)<1.3f)
+                    {
+                        scaleImage(btnImage, widthPixels);
+                    }else{
+                        scaleImageHeight(btnImage,heightPixels);
+                    }
                 }
 
                 break;

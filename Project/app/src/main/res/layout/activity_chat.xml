@@ -31,6 +31,7 @@
         android:layout_alignParentBottom="true"
         android:clickable="true"
         android:src="@drawable/send"
+        android:layout_marginBottom="4dp"
         app:fabSize="mini" />
 
 
@@ -40,8 +41,14 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/btnSend"
         android:textSize="18sp"
+        android:background="@color/gray_light"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
+        android:layout_marginBottom="5dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:hint="@string/nh_p_tin_nh_n"
         android:inputType="textMultiLine"
         />
@@ -51,11 +58,10 @@
         android:id="@+id/messages_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
         android:layout_above="@id/btnSend"
         android:divider="@android:color/transparent"
-        android:layout_marginBottom="16dp"
+        android:listSelector="@android:color/transparent"
+        android:layout_marginBottom="5dp"
         android:transcriptMode="alwaysScroll"
         android:stackFromBottom="true"
         android:scrollbars="none"/>

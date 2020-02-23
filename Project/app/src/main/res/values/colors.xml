@@ -13,5 +13,6 @@
     <color name="white">#FFF</color>
     <color name="black">#000000</color>
     <color name="gray">#40000000</color>
+    <color name="gray_light">#36E2E1E1</color>
     <color name="transparent">#00000000</color>
 </resources>

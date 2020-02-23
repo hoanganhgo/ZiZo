@@ -46,14 +46,15 @@ public class ChatBoxFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //do nothing
-        AppCompatActivity activity=(AppCompatActivity)getActivity();
-        activity.getSupportActionBar().hide();
     }
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.activity_chatbox, container, false);
+
+        AppCompatActivity activity=(AppCompatActivity)getActivity();
+        activity.getSupportActionBar().hide();
 
         lv_chatbox=(ListView)view.findViewById(R.id.friends_list);
         progressBar=view.findViewById(R.id.progressBar_ChatBox);

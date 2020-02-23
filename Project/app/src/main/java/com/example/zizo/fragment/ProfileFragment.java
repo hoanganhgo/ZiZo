@@ -62,14 +62,15 @@ public class ProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //do nothing
-        AppCompatActivity activity=(AppCompatActivity)getActivity();
-        activity.getSupportActionBar().show();
     }
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,@Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.activity_profile, container, false);
+
+        AppCompatActivity activity=(AppCompatActivity)getActivity();
+        activity.getSupportActionBar().show();
 
         nickName=view.findViewById(R.id.nickName);
         Button btn_avatar = view.findViewById(R.id.btn_avatar);
@@ -229,7 +230,7 @@ public class ProfileFragment extends Fragment {
                           sumLikes.setText(Integer.toString(sum_likes));
                           sumComments.setText(Integer.toString(sum_comments));
 
-                          lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, myEmail));
+                          lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, myEmail, true));
 
                           MainActivity.finishProgressBar(progressBar);
                       }

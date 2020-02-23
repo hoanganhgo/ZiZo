@@ -3,7 +3,7 @@
     <item
         android:id="@+id/navigation_chat"
         android:icon="@drawable/chat"
-        android:title="Tin nhắn" />
+        android:title="Tin nhắn"/>
     <item
         android:id="@+id/navigation_friends"
         android:icon="@drawable/friends"
