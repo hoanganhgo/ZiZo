@@ -1,10 +1,12 @@
 package com.example.zizo.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.zizo.HomeActivity;
@@ -52,6 +54,8 @@ public class CustomListAdapterChatBox extends BaseAdapter {
             holder.online=convertView.findViewById(R.id.online);
             holder.nickName=convertView.findViewById(R.id.nickName_friend);
             holder.message=convertView.findViewById(R.id.message_theEnd);
+            holder.news_message=convertView.findViewById(R.id.new_message);
+            holder.timeOffinalMessage=convertView.findViewById(R.id.time_of_message);
             convertView.setTag(holder);
         }
         else {
@@ -75,6 +79,25 @@ public class CustomListAdapterChatBox extends BaseAdapter {
         holder.nickName.setText(chatBox.getNickName());
         holder.message.setText(chatBox.getMessage());
 
+        if (chatBox.isNew()){
+            holder.news_message.setVisibility(View.VISIBLE);
+        }else{
+            holder.news_message.setVisibility(View.INVISIBLE);
+        }
+
+        int hours=0;
+        hours=(int)(chatBox.getTimeOfMessage()/3600000);
+        if (hours<24 && hours>0){
+            holder.timeOffinalMessage.setText(hours+" giờ trước");
+        }else if (hours==0){
+            holder.timeOffinalMessage.setVisibility(View.INVISIBLE);
+        }
+
+        int day=hours/24;
+        if (day>0){
+            holder.timeOffinalMessage.setText(day+" ngày trước");
+        }
+
         return convertView;
     }
 
@@ -83,5 +106,7 @@ public class CustomListAdapterChatBox extends BaseAdapter {
         de.hdodenhof.circleimageview.CircleImageView online;
         TextView nickName;
         TextView message;
+        ImageView news_message;
+        TextView timeOffinalMessage;
     }
 }

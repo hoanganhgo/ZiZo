@@ -4,16 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -24,8 +27,11 @@ import com.example.zizo.fragment.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
 
@@ -89,6 +95,14 @@ public class HomeActivity extends AppCompatActivity {
         Drawable drawable= getDrawable(R.drawable.background_title);
         actionBar.setBackgroundDrawable(drawable);
 
+        final MenuView.ItemView item_message=(MenuView.ItemView)findViewById(R.id.navigation_chat);
+
+        //get my Email
+        auth=FirebaseAuth.getInstance();
+        FirebaseUser user=auth.getCurrentUser();
+        assert user != null;
+        final String myEmail=user.getEmail().replace('.','-');
+
         Thread threadGetSizeScreen=new Thread(){
             @Override
             public void run()
@@ -101,6 +115,34 @@ public class HomeActivity extends AppCompatActivity {
             }
         };
         threadGetSizeScreen.start();
+
+        final MediaPlayer media=MediaPlayer.create(this,R.raw.message_tone);
+        final boolean[] tone={false};
+        Thread listenMessage=new Thread()
+        {
+            @Override
+            public void run()
+            {
+                FirebaseDatabase.getInstance().getReference("MailBox").child(myEmail).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (tone[0]){
+                            media.start();
+                            Drawable icon=getDrawable(R.drawable.logo_zizo);
+                            item_message.setIcon(icon);
+                        }else{
+                            tone[0]=true;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        };
+        listenMessage.start();
 
         //Khởi tạo các fragment
         chatBoxFragment=new ChatBoxFragment();
@@ -118,10 +160,6 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    auth=FirebaseAuth.getInstance();
-                    FirebaseUser user=auth.getCurrentUser();
-                    assert user != null;
-                    String myEmail=user.getEmail().replace('.','-');
                     DatabaseReference myRef= FirebaseDatabase.getInstance().getReference("User").child(myEmail).child("realTime");
                     while(auth.getCurrentUser()!=null) {
                         Long realTime=(new Date()).getTime();

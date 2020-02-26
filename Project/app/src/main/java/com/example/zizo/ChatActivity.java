@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.zizo.object.MailBox;
 import com.example.zizo.object.MessageModel;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +35,7 @@ import java.util.Date;
 public class ChatActivity extends AppCompatActivity {
 
     private DatabaseReference myRef=null;
+    private DatabaseReference mailRef=null;
     private boolean existChatBox=false;
     private int kindUser=0;
     private String idChatBox="";
@@ -73,12 +75,11 @@ public class ChatActivity extends AppCompatActivity {
         Intent intent=getIntent();
         final String friend=intent.getStringExtra("email");
 
-        //Kiểm tra sự tồn tại của chatbox
-        final String id1=myEmail+"+"+friend;
-        final String id2=friend+"+"+myEmail;
-
-        // Read from the database
+        //Đường dẫn User
         myRef=FirebaseDatabase.getInstance().getReference("User");
+        //Đường dẫn đến Mail Box
+        mailRef=FirebaseDatabase.getInstance().getReference("MailBox");
+
 
         Thread thread1=new Thread(){
           @Override
@@ -101,39 +102,43 @@ public class ChatActivity extends AppCompatActivity {
         };
         thread1.start();
 
-        //Read Chat Box
+        //Kiểm tra sự tồn tại của chatbox
         Thread thread2=new Thread(){
           @Override
           public void run(){
-              myRef.child(myEmail).child("chatBox").addListenerForSingleValueEvent(new ValueEventListener() {
+              mailRef.child(myEmail).addListenerForSingleValueEvent(new ValueEventListener() {
                   @Override
                   public void onDataChange(DataSnapshot dataSnapshot) {
+                      String id1=myEmail+"+"+friend;
+                      String id2=friend+"+"+myEmail;
+
                       for (DataSnapshot item : dataSnapshot.getChildren())
                       {
-                          //Log.d("test123", "Value is: " + item.getValue());
-                          if (id1.contentEquals(item.getValue().toString()))
+                          MailBox mail=item.getValue(MailBox.class);
+                          //Log.e("test",mail.getId());
+                          if (id1.contentEquals(mail.getId()))
                           {
                               idChatBox=id1;
                               kindUser=findKindUser(myEmail,idChatBox);
                               existChatBox=true;
 
                               loadAvatarOfFriend(myEmail, idChatBox);
-                              //displayChatMessages();
+                              setViewed(mailRef,kindUser,myEmail,friend);
                               return;
                           }
                       }
 
                       for (DataSnapshot item : dataSnapshot.getChildren())
                       {
-                          //Log.d("test123", "Value is: " + item.getValue());
-                          if (id2.contentEquals(item.getValue().toString()))
+                          MailBox mail=item.getValue(MailBox.class);
+                          if (id2.contentEquals(mail.getId()))
                           {
                               idChatBox=id2;
                               kindUser=findKindUser(myEmail,idChatBox);
                               existChatBox=true;
 
                               loadAvatarOfFriend(myEmail, idChatBox);
-                              //displayChatMessages();
+                              setViewed(mailRef,kindUser,myEmail,friend);
                               return;
                           }
                       }
@@ -168,12 +173,14 @@ public class ChatActivity extends AppCompatActivity {
                     idChatBox=myEmail+"+"+friend;
                     kindUser=findKindUser(myEmail,idChatBox);
 
-                    myRef.child(myEmail).child("chatBox").push().setValue(idChatBox);
-                    myRef.child(friend).child("chatBox").push().setValue(idChatBox);
+                    //Tạo đối tượng Mail Box
+                    MailBox mailBox=new MailBox(idChatBox,"",0,1,1);
+
+                    mailRef.child(myEmail).child(idChatBox).setValue(mailBox);
+                    mailRef.child(friend).child(idChatBox).setValue(mailBox);
                     existChatBox=true;
 
                     loadAvatarOfFriend(myEmail, idChatBox);
-                    //displayChatMessages();
                 }
 
                 //Lấy thời điểm hiện tại
@@ -186,6 +193,31 @@ public class ChatActivity extends AppCompatActivity {
                         .getReference("ChatBox").child(idChatBox)
                         .push()
                         .setValue(newMess);
+
+                //Lưu giữ tin nhắn cuối cùng
+                String messageTheEnd=input.getText().toString();
+                if (messageTheEnd.length()>30){
+                    messageTheEnd = messageTheEnd.substring(0,30)+"...";
+                }
+                mailRef.child(myEmail).child(idChatBox).child("finalMessage").setValue(messageTheEnd);
+                mailRef.child(myEmail).child(idChatBox).child("timeOfFinalMessage").setValue(time);
+
+                mailRef.child(friend).child(idChatBox).child("finalMessage").setValue(messageTheEnd);
+                mailRef.child(friend).child(idChatBox).child("timeOfFinalMessage").setValue(time);
+
+                if (kindUser==1){
+                    mailRef.child(myEmail).child(idChatBox).child("user1Viewed").setValue(1); //đã xem
+                    mailRef.child(myEmail).child(idChatBox).child("user2Viewed").setValue(0);  //chưa xem
+
+                    mailRef.child(friend).child(idChatBox).child("user1Viewed").setValue(1); //đã xem
+                    mailRef.child(friend).child(idChatBox).child("user2Viewed").setValue(0);  //chưa xem
+                }else{
+                    mailRef.child(myEmail).child(idChatBox).child("user1Viewed").setValue(0);
+                    mailRef.child(myEmail).child(idChatBox).child("user2Viewed").setValue(1);
+
+                    mailRef.child(friend).child(idChatBox).child("user1Viewed").setValue(0);
+                    mailRef.child(friend).child(idChatBox).child("user2Viewed").setValue(1);
+                }
 
                 // Clear the input
                 input.setText("");
@@ -311,5 +343,17 @@ public class ChatActivity extends AppCompatActivity {
           }
         };
         thread.start();
+    }
+
+    private void setViewed(DatabaseReference mailRef, int kindUser, String myEmail, String friend)
+    {
+        if (kindUser==1){
+
+            mailRef.child(myEmail).child(idChatBox).child("user1Viewed").setValue(1); //đã xem
+            mailRef.child(friend).child(idChatBox).child("user1Viewed").setValue(1); //đã xem
+        }else if (kindUser==2){
+            mailRef.child(myEmail).child(idChatBox).child("user2Viewed").setValue(1);
+            mailRef.child(friend).child(idChatBox).child("user2Viewed").setValue(1);
+        }
     }
 }

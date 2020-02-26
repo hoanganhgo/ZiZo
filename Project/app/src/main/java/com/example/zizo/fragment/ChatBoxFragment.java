@@ -20,7 +20,7 @@ import com.example.zizo.MainActivity;
 import com.example.zizo.R;
 import com.example.zizo.adapter.CustomListAdapterChatBox;
 import com.example.zizo.object.ChatBox;
-import com.example.zizo.object.MessageModel;
+import com.example.zizo.object.MailBox;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -34,6 +34,8 @@ import java.util.Date;
 
 public class ChatBoxFragment extends Fragment {
 
+    private DatabaseReference myRef=null;
+    private DatabaseReference mailRef=null;
     private ListView lv_chatbox;
     private String myEmail;
     private ArrayList<ChatBox> chatbox_list=null;
@@ -41,6 +43,7 @@ public class ChatBoxFragment extends Fragment {
     private ProgressBar progressBar;
 
     private int size=0;
+    private boolean started=false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,7 @@ public class ChatBoxFragment extends Fragment {
 
         lv_chatbox=(ListView)view.findViewById(R.id.friends_list);
         progressBar=view.findViewById(R.id.progressBar_ChatBox);
+        started=false;
 
         MainActivity.startProgressBar(progressBar,50);
 
@@ -71,51 +75,39 @@ public class ChatBoxFragment extends Fragment {
         //Set friends list
         chatbox_list=new ArrayList<ChatBox>();
 
-        //Lấy danh sách người dùng từ firebase
-        final DatabaseReference myRef= FirebaseDatabase.getInstance().getReference().child("User");
+        //Lấy đường dẫn User
+        myRef= FirebaseDatabase.getInstance().getReference().child("User");
+        //Lấy đường dẫn Mail Box
+        mailRef= FirebaseDatabase.getInstance().getReference().child("MailBox");
 
-        // Read from the database
-        myRef.child(myEmail).child("chatBox").addListenerForSingleValueEvent(new ValueEventListener() {
+        // Lấy danh sách những chat box
+        mailRef.child(myEmail).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 size=(int)dataSnapshot.getChildrenCount();
                 //Log.e("test123", String.valueOf(size));
                 for (DataSnapshot item: dataSnapshot.getChildren()) {
-                    String idChatBox=item.getValue().toString();
-                    String friend=findFriend(myEmail,idChatBox);
+                    final MailBox mail=item.getValue(MailBox.class);
+                    //Log.e("test",mail.getId());
+                    String friend=findFriend(myEmail,mail.getId());
+                    int kind=findKindUser(myEmail,mail.getId());
+                    boolean isNew=false;
+                    if (kind==1){
+                        if (mail.getUser1Viewed()==0)
+                        {
+                            isNew=true;
+                        }
+                    }
+                    else
+                    {
+                        if (mail.getUser2Viewed()==0)
+                        {
+                            isNew=true;
+                        }
+                    }
+                    final boolean finalIsNew = isNew;
+
                     friends_email.add(friend);
-                    final ArrayList<String> messagesTheEnd=new ArrayList<String>();
-                    final int[] count = {0};
-
-                    //Lấy tin nhắn cuối cùng
-                    FirebaseDatabase.getInstance().getReference("ChatBox").child(idChatBox)
-                            .addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    long size=dataSnapshot.getChildrenCount();
-                                    long count=0;
-                                    for (DataSnapshot item : dataSnapshot.getChildren())
-                                    {
-                                        count++;
-                                        if (count==size)
-                                        {
-                                            MessageModel message=item.getValue(MessageModel.class);
-                                            //Log.e("test123",message.getContent());
-                                            String messageContent=message.getContent();
-                                            if (messageContent.length()>30)
-                                            {
-                                                messageContent = messageContent.substring(0,30)+"...";
-                                            }
-                                            messagesTheEnd.add(messageContent);
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
 
                     //Lấy thông tin bạn bè
                     myRef.child(friend).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -136,11 +128,9 @@ public class ChatBoxFragment extends Fragment {
                                 online=true;
                             }
 
-                            ChatBox chatBox=new ChatBox(avatar,online,nickName,messagesTheEnd.get(count[0]++));
+                            ChatBox chatBox=new ChatBox(avatar,online,nickName,mail.getFinalMessage(), finalIsNew, current - mail.getTimeOfFinalMessage());
 
                             chatbox_list.add(chatBox);
-
-                            messagesTheEnd.clear();
 
                             //Sau khi dữ liệu đã được thêm vào đầy đủ ta tiến hành setAdapter
                             if (chatbox_list.size()==size)
@@ -182,9 +172,66 @@ public class ChatBoxFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy()
+    public void onStart()
     {
-        super.onDestroy();
+        super.onStart();
+
+        if (!started){
+            started=true;
+            return;
+        }
+
+        //Mặc định danh sách chat box không thay đổi
+        // Lấy danh sách những chat box
+        mailRef.child(myEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int index=0;
+                //Log.e("test123", String.valueOf(size));
+                for (DataSnapshot item: dataSnapshot.getChildren()) {
+                    final MailBox mail=item.getValue(MailBox.class);
+                    //Neu co mot chat box moi xuat hien ta sẽ bỏ qua nó
+                    if (index>=chatbox_list.size()){
+                        break;
+                    }
+                    //Cap nhat tin nhat cuoi cung
+                    chatbox_list.get(index).setMessage(mail.getFinalMessage());
+                    //Cap nhat thong bao tin nhan moi
+                    int kind=findKindUser(myEmail,mail.getId());
+                    boolean isNew=false;
+                    if (kind==1){
+                        if (mail.getUser1Viewed()==0)
+                        {
+                            isNew=true;
+                        }
+                    }
+                    else
+                    {
+                        if (mail.getUser2Viewed()==0)
+                        {
+                            isNew=true;
+                        }
+                    }
+                    final boolean finalIsNew = isNew;
+                    chatbox_list.get(index).setNew(finalIsNew);
+
+                    index++;
+                }
+                lv_chatbox.setAdapter(new CustomListAdapterChatBox(getContext(), chatbox_list));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("Test123", "Failed to read value.", error.toException());
+            }
+        });
+    }
+
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
         friends_email.clear();
     }
 
@@ -202,6 +249,22 @@ public class ChatBoxFragment extends Fragment {
         else
         {
             return s1;
+        }
+    }
+
+    //return 1 if me. Return 2 if friend
+    private int findKindUser(String myEmail, String idChatBox)
+    {
+        int index=idChatBox.indexOf('+');
+        String s=idChatBox.substring(0,index);
+
+        if (s.contentEquals(myEmail))
+        {
+            return 1;
+        }
+        else
+        {
+            return 2;
         }
     }
 }

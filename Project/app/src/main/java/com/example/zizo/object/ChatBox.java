@@ -6,13 +6,17 @@ public class ChatBox {
     private boolean online;
     private String nickName;
     private String message;
+    private boolean isNew;
+    private long timeOfMessage;
 
-    public ChatBox(String avatar, boolean online, String nickName, String message)
+    public ChatBox(String avatar, boolean online, String nickName, String message, boolean isNew, long timeOfMessage)
     {
         this.avatar=avatar;
         this.online=online;
         this.nickName=nickName;
         this.message=message;
+        this.isNew = isNew;
+        this.timeOfMessage = timeOfMessage;
     }
 
 
@@ -46,5 +50,21 @@ public class ChatBox {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean aNew) {
+        isNew = aNew;
+    }
+
+    public long getTimeOfMessage() {
+        return timeOfMessage;
+    }
+
+    public void setTimeOfMessage(long timeOfMessage) {
+        this.timeOfMessage = timeOfMessage;
     }
 }
