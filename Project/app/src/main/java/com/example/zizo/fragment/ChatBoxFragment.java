@@ -128,7 +128,7 @@ public class ChatBoxFragment extends Fragment {
                                 online=true;
                             }
 
-                            ChatBox chatBox=new ChatBox(avatar,online,nickName,mail.getFinalMessage(), finalIsNew, current - mail.getTimeOfFinalMessage());
+                            ChatBox chatBox=new ChatBox(avatar,online,nickName,mail.getFinalMessage(), finalIsNew, mail.getTimeOfFinalMessage());
 
                             chatbox_list.add(chatBox);
 
@@ -136,6 +136,7 @@ public class ChatBoxFragment extends Fragment {
                             if (chatbox_list.size()==size)
                             {
                                 //Log.e("test123", "OK");
+                                //ArrayList<ChatBox> data=sortChatBox(chatbox_list);
                                 lv_chatbox.setAdapter(new CustomListAdapterChatBox(view.getContext(), chatbox_list));
                             }
 
@@ -196,6 +197,8 @@ public class ChatBoxFragment extends Fragment {
                     }
                     //Cap nhat tin nhat cuoi cung
                     chatbox_list.get(index).setMessage(mail.getFinalMessage());
+                    //Cap nhat thoi gian
+                    chatbox_list.get(index).setTimeOfMessage(mail.getTimeOfFinalMessage());
                     //Cap nhat thong bao tin nhan moi
                     int kind=findKindUser(myEmail,mail.getId());
                     boolean isNew=false;
@@ -217,6 +220,8 @@ public class ChatBoxFragment extends Fragment {
 
                     index++;
                 }
+
+                //ArrayList<ChatBox> data=sortChatBox(chatbox_list);
                 lv_chatbox.setAdapter(new CustomListAdapterChatBox(getContext(), chatbox_list));
             }
 
@@ -267,4 +272,49 @@ public class ChatBoxFragment extends Fragment {
             return 2;
         }
     }
+
+//    private void swap(ArrayList<ChatBox> array, int i, int j)
+//    {
+//        ChatBox temp=new ChatBox(array.get(i).getAvatar(), array.get(i).isOnline(), array.get(i).getNickName(),
+//                array.get(i).getMessage(), array.get(i).isNew(), array.get(i).getTimeOfMessage());
+//
+//        //array[i]=array[j]
+//        array.get(i).setAvatar(array.get(j).getAvatar());
+//        array.get(i).setOnline(array.get(j).isOnline());
+//        array.get(i).setNickName(array.get(j).getNickName());
+//        array.get(i).setMessage(array.get(j).getMessage());
+//        array.get(i).setNew(array.get(j).isNew());
+//        array.get(i).setTimeOfMessage(array.get(j).getTimeOfMessage());
+//
+//        //array[j]=temp
+//        array.get(j).setAvatar(temp.getAvatar());
+//        array.get(j).setOnline(temp.isOnline());
+//        array.get(j).setNickName(temp.getNickName());
+//        array.get(j).setMessage(temp.getMessage());
+//        array.get(j).setNew(temp.isNew());
+//        array.get(j).setTimeOfMessage(temp.getTimeOfMessage());
+//    }
+
+//    private ArrayList<ChatBox> sortChatBox(ArrayList<ChatBox> array)
+//    {
+//        int n=array.size();
+//        for (int i=0;i<n-1;i++)
+//        {
+//            int min=i;
+//            for (int j=i+1;j<n;j++)
+//            {
+//                if (array.get(j).getTimeOfMessage()<array.get(min).getTimeOfMessage())
+//                {
+//                    min=j;
+//                }
+//            }
+//
+//            if (min!=i)
+//            {
+//                swap(array, min, i);
+//            }
+//        }
+//
+//        return array;
+//    }
 }

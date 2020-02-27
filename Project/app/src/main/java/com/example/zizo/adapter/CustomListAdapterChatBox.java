@@ -15,6 +15,7 @@ import com.example.zizo.object.ChatBox;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CustomListAdapterChatBox extends BaseAdapter {
     private ArrayList<ChatBox> listData;
@@ -79,14 +80,17 @@ public class CustomListAdapterChatBox extends BaseAdapter {
         holder.nickName.setText(chatBox.getNickName());
         holder.message.setText(chatBox.getMessage());
 
+        //Người dùng có đang online ko?
         if (chatBox.isNew()){
             holder.news_message.setVisibility(View.VISIBLE);
         }else{
             holder.news_message.setVisibility(View.INVISIBLE);
         }
 
-        int hours=0;
-        hours=(int)(chatBox.getTimeOfMessage()/3600000);
+        //Thời gian tin nhắn cuối cùng
+        long current=(new Date()).getTime();
+        long time=current-chatBox.getTimeOfMessage();
+        int hours=(int)(time/3600000);
         if (hours<24 && hours>0){
             holder.timeOffinalMessage.setText(hours+" giờ trước");
         }else if (hours==0){

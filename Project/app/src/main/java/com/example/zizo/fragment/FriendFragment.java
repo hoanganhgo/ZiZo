@@ -120,15 +120,9 @@ public class FriendFragment extends Fragment{
                                   String nickName=dataSnapshot.child("nickName").getValue().toString();
                                   //Log.e("test123",nickName);
 
-                                  //Xác định xem bạn bè còn online hay không
-                                  boolean online=false;
-                                  long current=(new Date()).getTime();
-                                  if (current-Long.parseLong(realTime)<60000)
-                                  {
-                                      online=true;
-                                  }
+                                  long time=Long.parseLong(realTime);
 
-                                  UserBasic userBasic=new UserBasic(friend, avatar,online,nickName);
+                                  UserBasic userBasic=new UserBasic(friend, avatar, time, nickName);
 
                                   friends_list.add(userBasic);
 

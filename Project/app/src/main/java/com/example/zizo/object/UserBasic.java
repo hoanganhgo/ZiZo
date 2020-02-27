@@ -3,14 +3,14 @@ package com.example.zizo.object;
 public class UserBasic {
 
     private String avatar;
-    private boolean online;
+    private long time;
     private String nickName;
     private String email;
 
-    public UserBasic(String email, String avatar, boolean online, String nickName)
+    public UserBasic(String email, String avatar, long time, String nickName)
     {
         this.avatar=avatar;
-        this.online=online;
+        this.time=time;
         this.nickName=nickName;
         this.email=email;
     }
@@ -20,7 +20,7 @@ public class UserBasic {
         this.email=email;
         this.avatar=avatar;
         this.nickName=nickName;
-        this.online=false;
+        this.time=0;
     }
 
 
@@ -30,14 +30,6 @@ public class UserBasic {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
-    }
-
-    public boolean isOnline() {
-        return online;
-    }
-
-    public void setOnline(boolean online) {
-        this.online = online;
     }
 
     public String getNickName() {
@@ -54,5 +46,13 @@ public class UserBasic {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 }

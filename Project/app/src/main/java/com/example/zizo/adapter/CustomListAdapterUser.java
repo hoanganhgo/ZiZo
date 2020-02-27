@@ -18,6 +18,7 @@ import com.example.zizo.UserActivity;
 import com.example.zizo.object.UserBasic;
 import com.squareup.picasso.Picasso;
 
+import java.util.Date;
 import java.util.ArrayList;
 
 public class CustomListAdapterUser extends BaseAdapter {
@@ -60,6 +61,7 @@ public class CustomListAdapterUser extends BaseAdapter {
             holder.nickName=convertView.findViewById(R.id.nickName_friend);
             holder.btn_goTo=convertView.findViewById(R.id.btn_goTo);
             holder.btn_message=convertView.findViewById(R.id.btn_message);
+            holder.online_time=convertView.findViewById(R.id.time_online);
             convertView.setTag(holder);
         }
         else {
@@ -72,14 +74,36 @@ public class CustomListAdapterUser extends BaseAdapter {
         float widthAvatar=200*(HomeActivity.widthPixels/720f);
         Picasso.get().load(userBasic.getAvatar()).resize((int)widthAvatar,0).into(holder.avatar);
 
-        if (userBasic.isOnline())
-        {
+        //Kiểm tra tình trạng online
+        long current=(new Date()).getTime();
+        long time=(current - userBasic.getTime())/1000;   //seconds
+        if (time<60){
             holder.online.setVisibility(View.VISIBLE);
+            holder.online_time.setVisibility(View.INVISIBLE);
         }
-        else
+
+        long minutes=time/60;
+        if (minutes>0 && minutes<60){
+            holder.online.setVisibility(View.INVISIBLE);
+            holder.online_time.setVisibility(View.VISIBLE);
+            holder.online_time.setText("Truy cập "+minutes+" phút trước");
+        }
+
+        long hours=minutes/60;
+        if (hours>0 && hours<24)
         {
             holder.online.setVisibility(View.INVISIBLE);
+            holder.online_time.setVisibility(View.VISIBLE);
+            holder.online_time.setText("Truy cập "+hours+" giờ trước");
         }
+
+        int days=(int)hours/24;
+        if (days>0){
+            holder.online.setVisibility(View.INVISIBLE);
+            holder.online_time.setVisibility(View.VISIBLE);
+            holder.online_time.setText("Truy cập "+days+" ngày trước");
+        }
+
         holder.nickName.setText(userBasic.getNickName());
 
         holder.btn_goTo.setOnClickListener(new View.OnClickListener() {
@@ -113,5 +137,6 @@ public class CustomListAdapterUser extends BaseAdapter {
         TextView nickName;
         Button btn_goTo;
         ImageButton btn_message;
+        TextView online_time;
     }
 }

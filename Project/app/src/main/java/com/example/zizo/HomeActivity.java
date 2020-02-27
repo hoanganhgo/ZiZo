@@ -40,6 +40,7 @@ public class HomeActivity extends AppCompatActivity {
     public static float heightPixels=0f;
     public static String imageDefault="https://firebasestorage.googleapis.com/v0/b/zizo-9fdb5.appspot.com/o/default%2Fempty.png?alt=media&token=ecc7ef9c-98ee-4324-bf6b-e564d25ae7a6";
     public static boolean resetDiary=true;
+    public static boolean chatting=true;
 
     BottomNavigationView bottomNavigation;
     private FirebaseAuth auth;
@@ -118,6 +119,7 @@ public class HomeActivity extends AppCompatActivity {
 
         final MediaPlayer media=MediaPlayer.create(this,R.raw.message_tone);
         final boolean[] tone={false};
+
         Thread listenMessage=new Thread()
         {
             @Override
@@ -126,9 +128,9 @@ public class HomeActivity extends AppCompatActivity {
                 FirebaseDatabase.getInstance().getReference("MailBox").child(myEmail).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (tone[0]){
+                        if (tone[0] && chatting){
                             media.start();
-                            Drawable icon=getDrawable(R.drawable.logo_zizo);
+                            Drawable icon=getDrawable(R.drawable.new_chat);
                             item_message.setIcon(icon);
                         }else{
                             tone[0]=true;

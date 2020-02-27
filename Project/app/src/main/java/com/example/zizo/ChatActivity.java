@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,6 +41,12 @@ public class ChatActivity extends AppCompatActivity {
     private int kindUser=0;
     private String idChatBox="";
     private String urlAvatar=null;
+    private long message_time=0;
+
+    private RelativeLayout.LayoutParams paramsZERO=new RelativeLayout.LayoutParams(android.app.ActionBar.LayoutParams.WRAP_CONTENT, android.app.ActionBar.LayoutParams.WRAP_CONTENT);
+    private RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(android.app.ActionBar.LayoutParams.WRAP_CONTENT, android.app.ActionBar.LayoutParams.WRAP_CONTENT);
+    private de.hdodenhof.circleimageview.CircleImageView avatar;
+    private TextView greeting;
     private ProgressBar progressBar;
 
     @Override
@@ -64,8 +71,15 @@ public class ChatActivity extends AppCompatActivity {
         Drawable drawable= getDrawable(R.drawable.background_title);
         actionBar.setBackgroundDrawable(drawable);
 
+        avatar=findViewById(R.id.avatar_new_chat);
+        greeting=(TextView)findViewById(R.id.name_chat);
         progressBar=(ProgressBar)findViewById(R.id.progressBar_Chat);
+
+        paramsZERO.setMargins(0,0,0,0);
+        params.setMargins(0,10,0,10);
+
         MainActivity.startProgressBar(progressBar,35);
+        HomeActivity.chatting=false;
 
         //Lấy thông tin đăng nhập
         FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
@@ -91,6 +105,7 @@ public class ChatActivity extends AppCompatActivity {
                   public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                       String nickName=dataSnapshot.getValue(String.class);
                       setTitle(nickName);
+                      greeting.setText("Hãy gửi lời chào đến "+nickName+" nào!");
                   }
 
                   @Override
@@ -142,6 +157,31 @@ public class ChatActivity extends AppCompatActivity {
                               return;
                           }
                       }
+
+                      //Chưa tồn tại chat box
+                      avatar.setVisibility(View.VISIBLE);
+                      greeting.setVisibility(View.VISIBLE);
+
+                      Thread thread=new Thread(){
+                          @Override
+                          public void run(){
+                              myRef.child(friend).child("avatar").addValueEventListener(new ValueEventListener() {
+                                  @Override
+                                  public void onDataChange(DataSnapshot dataSnapshot) {
+                                      String url = dataSnapshot.getValue(String.class);
+                                      //Log.e("test123",value);
+                                      float widthAvatar=200*(HomeActivity.widthPixels/720f);
+                                      Picasso.get().load(url).resize((int)widthAvatar,0).into(avatar);
+                                  }
+
+                                  @Override
+                                  public void onCancelled(DatabaseError error) {
+                                      // Failed to read value
+                                  }
+                              });
+                          }
+                      };
+                      thread.start();
                   }
 
                   @Override
@@ -179,6 +219,10 @@ public class ChatActivity extends AppCompatActivity {
                     mailRef.child(myEmail).child(idChatBox).setValue(mailBox);
                     mailRef.child(friend).child(idChatBox).setValue(mailBox);
                     existChatBox=true;
+
+                    //Tắt lời chào
+                    avatar.setVisibility(View.INVISIBLE);
+                    greeting.setVisibility(View.INVISIBLE);
 
                     loadAvatarOfFriend(myEmail, idChatBox);
                 }
@@ -225,6 +269,13 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        HomeActivity.chatting=true;
+    }
+
     // hiển thị tin nhắn
     private void displayChatMessages(){
         FirebaseListAdapter<MessageModel> adapter = new FirebaseListAdapter<MessageModel>(this, MessageModel.class,
@@ -238,8 +289,6 @@ public class ChatActivity extends AppCompatActivity {
                 TextView messageTime = (TextView)v.findViewById(R.id.message_time);
 
                 TextView textFriend=(TextView)v.findViewById(R.id.message_content_friend);
-                TextView timeFriend=(TextView)v.findViewById(R.id.message_time_friend);
-
                 //Log.e("test123", model.getContent());
 
                 // Set their text
@@ -248,34 +297,48 @@ public class ChatActivity extends AppCompatActivity {
 
                 if (model.getSender()==kindUser)
                 {
-                    textFriend.setVisibility(View.VISIBLE);
-                    timeFriend.setVisibility(View.VISIBLE);
-
-                    textFriend.setText(model.getContent());
-                    // Format the date before showing it
-                    timeFriend.setText(DateFormat.format("dd-MM-yyyy (HH:mm)",
-                            model.getTime()));
-
+                    //Hiển thị tin nhắn của mình
                     avatarSender.setVisibility(View.INVISIBLE);
-                    messageText.setVisibility(View.INVISIBLE);
-                    messageTime.setVisibility(View.INVISIBLE);
+                    textFriend.setVisibility(View.INVISIBLE);
+                    avatarSender.getLayoutParams().height=0;
+                    textFriend.setTextSize(0);
+                    //avatarSender.getLayoutParams().width=0;
+                    //Log.e("test","size: "+avatarSender.getLayoutParams().height);
+
+                    messageText.setText(model.getContent());
+                    messageText.setVisibility(View.VISIBLE);
                 }
                 else
                 {
+                    //Hiển thị tin nhắn của bạn chat
+                    messageText.setVisibility(View.INVISIBLE);
+
                     avatarSender.setVisibility(View.VISIBLE);
-                    messageText.setVisibility(View.VISIBLE);
-                    messageTime.setVisibility(View.VISIBLE);
+                    textFriend.setVisibility(View.VISIBLE);
+                    textFriend.setTextSize(16);
+                    avatarSender.getLayoutParams().height=80;
+                    //avatarSender.getLayoutParams().width=40;
 
                     //Set avatar by Url
                     float widthAvatar=150*(HomeActivity.widthPixels/720f);
                     Picasso.get().load(urlAvatar).resize((int)widthAvatar,0).into(avatarSender);
-                    messageText.setText(model.getContent());
-                    // Format the date before showing it
-                    messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)",
-                            model.getTime()));
-                    textFriend.setVisibility(View.INVISIBLE);
-                    timeFriend.setVisibility(View.INVISIBLE);
+                    textFriend.setText(model.getContent());
                 }
+
+                if (message_time - model.getTime() > 1800000)
+                {
+                    messageTime.setVisibility(View.VISIBLE);
+                    messageTime.setTextSize(12);
+                    messageTime.setPadding(0,20,0,20);
+                    // Format the date before showing it
+                    messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm)",
+                            model.getTime()));
+                }else{
+                    messageTime.setVisibility(View.INVISIBLE);
+                    messageTime.setTextSize(0);
+                    messageTime.setPadding(0,0,0,0);
+                }
+                message_time=model.getTime();
             }
         };
 
@@ -324,7 +387,7 @@ public class ChatActivity extends AppCompatActivity {
         Thread thread=new Thread(){
           @Override
           public void run(){
-              myRef.child(finalEmail).child("avatar").addValueEventListener(new ValueEventListener() {
+              myRef.child(finalEmail).child("avatar").addListenerForSingleValueEvent(new ValueEventListener() {
                   @Override
                   public void onDataChange(DataSnapshot dataSnapshot) {
                       String value = dataSnapshot.getValue(String.class);
