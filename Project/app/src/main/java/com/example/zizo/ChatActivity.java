@@ -161,6 +161,7 @@ public class ChatActivity extends AppCompatActivity {
                       //Chưa tồn tại chat box
                       avatar.setVisibility(View.VISIBLE);
                       greeting.setVisibility(View.VISIBLE);
+                      MainActivity.finishProgressBar(progressBar);
 
                       Thread thread=new Thread(){
                           @Override
@@ -298,12 +299,8 @@ public class ChatActivity extends AppCompatActivity {
                 if (model.getSender()==kindUser)
                 {
                     //Hiển thị tin nhắn của mình
-                    avatarSender.setVisibility(View.INVISIBLE);
-                    textFriend.setVisibility(View.INVISIBLE);
-                    avatarSender.getLayoutParams().height=0;
-                    textFriend.setTextSize(0);
-                    //avatarSender.getLayoutParams().width=0;
-                    //Log.e("test","size: "+avatarSender.getLayoutParams().height);
+                    avatarSender.setVisibility(View.GONE);
+                    textFriend.setVisibility(View.GONE);
 
                     messageText.setText(model.getContent());
                     messageText.setVisibility(View.VISIBLE);
@@ -311,13 +308,10 @@ public class ChatActivity extends AppCompatActivity {
                 else
                 {
                     //Hiển thị tin nhắn của bạn chat
-                    messageText.setVisibility(View.INVISIBLE);
+                    messageText.setVisibility(View.GONE);
 
                     avatarSender.setVisibility(View.VISIBLE);
                     textFriend.setVisibility(View.VISIBLE);
-                    textFriend.setTextSize(16);
-                    avatarSender.getLayoutParams().height=80;
-                    //avatarSender.getLayoutParams().width=40;
 
                     //Set avatar by Url
                     float widthAvatar=150*(HomeActivity.widthPixels/720f);
@@ -328,15 +322,12 @@ public class ChatActivity extends AppCompatActivity {
                 if (message_time - model.getTime() > 1800000)
                 {
                     messageTime.setVisibility(View.VISIBLE);
-                    messageTime.setTextSize(12);
-                    messageTime.setPadding(0,20,0,20);
+
                     // Format the date before showing it
                     messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm)",
                             model.getTime()));
                 }else{
-                    messageTime.setVisibility(View.INVISIBLE);
-                    messageTime.setTextSize(0);
-                    messageTime.setPadding(0,0,0,0);
+                    messageTime.setVisibility(View.GONE);
                 }
                 message_time=model.getTime();
             }

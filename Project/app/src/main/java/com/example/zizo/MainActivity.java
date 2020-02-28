@@ -207,26 +207,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static void startProgressBar(final ProgressBar progressBar, final int maximum)
     {
-        progressBar.setMax(maximum);
         progressBar.setVisibility(View.VISIBLE);
-        Thread thread=new Thread(){
-          @Override
-          public void run(){
-              int progress=0;
-
-              while (progress<=maximum){
-                  progressBar.setProgress(progress++);
-                  try {
-                      sleep(50);
-                  } catch (InterruptedException e) {
-                      e.printStackTrace();
-                  }
-              }
-
-              progressBar.setVisibility(View.INVISIBLE);
-          }
-        };
-        thread.start();
     }
 
     public static void finishProgressBar(final ProgressBar progressBar)

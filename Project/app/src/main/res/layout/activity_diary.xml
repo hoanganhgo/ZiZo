@@ -4,16 +4,10 @@
     android:layout_height="match_parent">
     <ProgressBar
         android:id="@+id/progressBar_Diary"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:indeterminate="false"
-        android:progressDrawable="@drawable/circular_progress_bar"
-        android:background="@drawable/circle_shape"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:max="100"
-        android:visibility="invisible"
-        android:progress="0" />
+        android:visibility="invisible"/>
 
     <ImageButton
         android:id="@+id/btn_post"

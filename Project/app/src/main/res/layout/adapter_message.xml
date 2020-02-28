@@ -27,15 +27,6 @@
         android:layout_marginStart="10dp" />
 
     <TextView
-        android:id="@+id/message_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/message_content"
-        android:layout_centerHorizontal="true"
-        android:textSize="12sp"
-        android:text=""/>
-
-    <TextView
         android:id="@+id/message_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,6 +41,17 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="10dp"
         android:layout_marginTop="5dp" />
+
+    <TextView
+        android:id="@+id/message_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/message_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="12sp"
+        android:paddingTop="10dp"
+        android:paddingBottom="15dp"
+        android:text=""/>
 
 
 </RelativeLayout>

@@ -109,8 +109,8 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@android:color/darker_gray"
+        android:layout_height="4dp"
+        android:background="@color/gray"
         android:layout_below="@+id/like_status"
         android:layout_marginTop="5dp"/>
 </RelativeLayout>

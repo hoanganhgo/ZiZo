@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -42,6 +43,8 @@ public class FriendFragment extends Fragment{
     private String myEmail;
     private ArrayList<UserBasic> friends_list;
     private ProgressBar progressBar;
+    private ImageView new_invitation;
+    private DatabaseReference myRef=null;
 
     private int size=0;
 
@@ -63,6 +66,7 @@ public class FriendFragment extends Fragment{
         ImageButton btn_invitation = (ImageButton) view.findViewById(R.id.button_invitation);
         lv_friends=(ListView)view.findViewById(R.id.friends_list);
         progressBar=view.findViewById(R.id.progressBar_friend);
+        new_invitation=view.findViewById(R.id.new_invitation);
 
         MainActivity.startProgressBar(progressBar,40);
 
@@ -97,12 +101,15 @@ public class FriendFragment extends Fragment{
         friends_list=new ArrayList<UserBasic>();
 
         //Lấy danh sách người dùng từ firebase
-        final DatabaseReference myRef= FirebaseDatabase.getInstance().getReference().child("User");
+        myRef= FirebaseDatabase.getInstance().getReference().child("User");
         // Read from the database
         myRef.child(myEmail).child("friends").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 size=(int)dataSnapshot.getChildrenCount();
+                if (size==0){
+                    MainActivity.finishProgressBar(progressBar);
+                }
                 //Log.e("test123", String.valueOf(size));
                 for (DataSnapshot item: dataSnapshot.getChildren()) {
                     final String friend=item.getValue().toString();
@@ -157,5 +164,26 @@ public class FriendFragment extends Fragment{
         });
 
         return view;
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        myRef.child(myEmail).child("invitation").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getChildrenCount()>0){
+                    new_invitation.setVisibility(View.VISIBLE);
+                }else{
+                    new_invitation.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

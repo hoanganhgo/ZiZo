@@ -283,6 +283,8 @@ public class UserActivity extends AppCompatActivity {
                     lv_status.setAdapter(new CustomListAdapterStatus(getApplication(),status_list, finalMyEmail, false));
 
                     MainActivity.finishProgressBar(progressBar);
+                }else{
+                    MainActivity.finishProgressBar(progressBar);
                 }
             }
 

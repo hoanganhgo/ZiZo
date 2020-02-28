@@ -290,68 +290,37 @@ public class CustomListAdapterStatus extends BaseAdapter {
                     }
                     status.addLike(myEmail);
 
+                    //Cập nhật lên firebase
                     FirebaseDatabase.getInstance().getReference("Status").child(status.getEmail())
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot item : dataSnapshot.getChildren())
-                                    {
-                                        if (Long.parseLong(item.child("dateTime").getValue().toString())==status.getDateTime())
-                                        {
-                                            //Log.e("test", "LIKE: "+item.child("content").getValue());
-                                            item.getRef().child("likes").push().setValue(myEmail);
-                                            break;
-                                        }
-                                    }
-                                }
+                            .child(Long.toString(status.getDateTime())).child("likes").push().setValue(myEmail);
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
                 }else{
                     holder.like.setBackgroundResource(R.drawable.heart);
                     holder.like.setTag(Boolean.FALSE);
                     holder.amountOfLikes.setText(Integer.toString(--sumOfLikes[0]));
                     status.removeLike(myEmail);
 
+                    //Cập nhật lên firebase
                     FirebaseDatabase.getInstance().getReference("Status").child(status.getEmail())
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot item : dataSnapshot.getChildren())
-                                    {
-                                        if (Long.parseLong(item.child("dateTime").getValue().toString())==status.getDateTime())
-                                        {
-                                            //Log.e("test", "DISLIKE: "+item.child("content").getValue());
-                                            item.getRef().child("likes").addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                    for (DataSnapshot item : dataSnapshot.getChildren())
-                                                    {
-                                                        if (item.getValue().toString().contentEquals(myEmail))
-                                                        {
-                                                            item.getRef().removeValue();
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                                }
-                                            });
-                                        }
-                                    }
+                            .child(Long.toString(status.getDateTime())).child("likes").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot item : dataSnapshot.getChildren())
+                            {
+                                if (item.getValue().toString().contentEquals(myEmail))
+                                {
+                                    item.getRef().removeValue();
+                                    break;
                                 }
+                            }
+                        }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                }
-                            });
+                        }
+                    });
+
                 }
 
             }
@@ -365,29 +334,13 @@ public class CustomListAdapterStatus extends BaseAdapter {
                 intent.putExtra("myEmail",myEmail);
                 intent.putExtra("likes",sumOfLikes[0]);
                 intent.putExtra("comments",sumOfComments[0]);
-                FirebaseDatabase.getInstance().getReference("Status").child(status.getEmail())
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                for (DataSnapshot item : dataSnapshot.getChildren())
-                                {
-                                    if (Long.parseLong(item.child("dateTime").getValue().toString())==status.getDateTime())
-                                    {
-                                        //Log.e("test",item.getRef().toString());
-                                        String ref=item.getRef().toString().substring(34);
-                                        ref=ref.replaceAll("%40","@");
-                                        intent.putExtra("refStatus", ref);
-                                        context.startActivity(intent);
-                                        break;
-                                    }
-                                }
-                            }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
+                //Cắt chuỗi reference gửi cho activty Comment
+                String ref=FirebaseDatabase.getInstance().getReference("Status").child(status.getEmail())
+                        .child(Long.toString(status.getDateTime())).toString().substring(34);
+                ref=ref.replaceAll("%40","@");
+                intent.putExtra("refStatus", ref);
+                context.startActivity(intent);
 
             }
         });

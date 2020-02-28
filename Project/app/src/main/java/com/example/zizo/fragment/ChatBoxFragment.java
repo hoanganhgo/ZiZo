@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.zizo.ChatActivity;
+import com.example.zizo.HomeActivity;
 import com.example.zizo.MainActivity;
 import com.example.zizo.R;
 import com.example.zizo.adapter.CustomListAdapterChatBox;
@@ -85,6 +86,9 @@ public class ChatBoxFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 size=(int)dataSnapshot.getChildrenCount();
+                if (size==0){
+                    MainActivity.finishProgressBar(progressBar);
+                }
                 //Log.e("test123", String.valueOf(size));
                 for (DataSnapshot item: dataSnapshot.getChildren()) {
                     final MailBox mail=item.getValue(MailBox.class);
@@ -169,6 +173,31 @@ public class ChatBoxFragment extends Fragment {
             }
         });
 
+        final boolean[] listen={false};
+        //Tiến trình lắng nghe tin nhắn
+        Thread listenMessage=new Thread()
+        {
+            @Override
+            public void run()
+            {
+                mailRef.child(myEmail).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (listen[0] && HomeActivity.chatting){
+                            UpdateChatBox();
+                        }else{
+                            listen[0]=true;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        };
+        listenMessage.start();
         return view;
     }
 
@@ -182,6 +211,51 @@ public class ChatBoxFragment extends Fragment {
             return;
         }
 
+        UpdateChatBox();
+    }
+
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+        friends_email.clear();
+    }
+
+    private String findFriend(String myEmail, String idChatBox)
+    {
+        int index=idChatBox.indexOf('+');
+        int len=idChatBox.length();
+        String s1=idChatBox.substring(0,index);
+        String s2=idChatBox.substring(index+1,len);
+
+        if (s1.contentEquals(myEmail))
+        {
+            return s2;
+        }
+        else
+        {
+            return s1;
+        }
+    }
+
+    //return 1 if me. Return 2 if friend
+    private int findKindUser(String myEmail, String idChatBox)
+    {
+        int index=idChatBox.indexOf('+');
+        String s=idChatBox.substring(0,index);
+
+        if (s.contentEquals(myEmail))
+        {
+            return 1;
+        }
+        else
+        {
+            return 2;
+        }
+    }
+
+    private void UpdateChatBox()
+    {
         //Mặc định danh sách chat box không thay đổi
         // Lấy danh sách những chat box
         mailRef.child(myEmail).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -231,46 +305,6 @@ public class ChatBoxFragment extends Fragment {
                 Log.w("Test123", "Failed to read value.", error.toException());
             }
         });
-    }
-
-    @Override
-    public void onDestroyView()
-    {
-        super.onDestroyView();
-        friends_email.clear();
-    }
-
-    private String findFriend(String myEmail, String idChatBox)
-    {
-        int index=idChatBox.indexOf('+');
-        int len=idChatBox.length();
-        String s1=idChatBox.substring(0,index);
-        String s2=idChatBox.substring(index+1,len);
-
-        if (s1.contentEquals(myEmail))
-        {
-            return s2;
-        }
-        else
-        {
-            return s1;
-        }
-    }
-
-    //return 1 if me. Return 2 if friend
-    private int findKindUser(String myEmail, String idChatBox)
-    {
-        int index=idChatBox.indexOf('+');
-        String s=idChatBox.substring(0,index);
-
-        if (s.contentEquals(myEmail))
-        {
-            return 1;
-        }
-        else
-        {
-            return 2;
-        }
     }
 
 //    private void swap(ArrayList<ChatBox> array, int i, int j)

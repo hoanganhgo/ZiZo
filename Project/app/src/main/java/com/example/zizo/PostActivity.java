@@ -155,7 +155,7 @@ public class PostActivity extends AppCompatActivity {
                                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                                     DatabaseReference myRef = database.getReference("Status").child(email);
                                     Status status=new Status(email,content,urlImage,dateTime,null,null);
-                                    myRef.push().setValue(status);
+                                    myRef.child(Long.toString(dateTime)).setValue(status);
 
                                     MainActivity.finishProgressBar(progressBar);
 
@@ -178,7 +178,7 @@ public class PostActivity extends AppCompatActivity {
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference myRef = database.getReference("Status").child(email);
                     Status status=new Status(email,content,null,dateTime,null,null);
-                    myRef.push().setValue(status);
+                    myRef.child(Long.toString(dateTime)).setValue(status);
 
                     MainActivity.finishProgressBar(progressBar);
 

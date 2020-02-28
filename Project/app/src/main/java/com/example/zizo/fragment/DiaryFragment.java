@@ -215,6 +215,8 @@ public class DiaryFragment extends Fragment {
                                   }
                               });
                           }
+                      }else{
+                          MainActivity.finishProgressBar(progressBar);
                       }
                   }
 

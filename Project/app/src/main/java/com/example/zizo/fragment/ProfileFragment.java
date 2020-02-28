@@ -233,6 +233,8 @@ public class ProfileFragment extends Fragment {
                           lv_status.setAdapter(new CustomListAdapterStatus(getContext(),status_list, myEmail, true));
 
                           MainActivity.finishProgressBar(progressBar);
+                      }else{
+                          MainActivity.finishProgressBar(progressBar);
                       }
                   }
 
