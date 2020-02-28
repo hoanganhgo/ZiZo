@@ -282,6 +282,8 @@ public class ProfileFragment extends Fragment {
 
                                     //set avatar Url on databases
                                     myRef.child("avatar").setValue(downloadUrl.toString());
+
+                                    //Ghi chú: avatar cũ vẫn còn trên Storage
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
