@@ -3,11 +3,13 @@ package com.example.zizo;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -40,6 +42,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText dateOfBirth;
     private TextView notify;
     private ProgressBar progressBar;
+    private ImageView logo;
     //final String TAG="signUp123";
 
     @Override
@@ -65,6 +68,14 @@ public class SignUpActivity extends AppCompatActivity {
         Drawable drawable= getDrawable(R.drawable.background_title);
         actionBar.setBackgroundDrawable(drawable);
 
+        //Lấy kích thước màn hình
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int widthPixels = displayMetrics.widthPixels;
+        int heightPixels=displayMetrics.heightPixels;
+        float scale=(float)heightPixels/widthPixels;
+        Log.e("test","scale: "+scale);
+
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
@@ -78,6 +89,18 @@ public class SignUpActivity extends AppCompatActivity {
         notify=(TextView)findViewById(R.id.notify);
         Button btn_signUp = (Button) findViewById(R.id.signUp_Click);
         progressBar=(ProgressBar)findViewById(R.id.progressBar_register);
+        logo=(ImageView)findViewById(R.id.logo_zizo);
+
+        //Cài đặt tỷ lệ màn hình cho từng loại Smart phone
+        if (scale<=1.7f)
+        {
+            //Giảm 100dp
+            logo.setVisibility(View.GONE);
+        }else if (scale<=1.8f){
+            //Giảm 50dp
+            logo.getLayoutParams().height=50;
+            logo.getLayoutParams().width=50;
+        }
 
         btn_signUp.setOnClickListener(new View.OnClickListener() {
             @Override

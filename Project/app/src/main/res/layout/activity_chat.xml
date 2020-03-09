@@ -62,7 +62,7 @@
         android:id="@+id/input_Message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/btnSend"
+        android:layout_toStartOf="@id/btnSend"
         android:textSize="18sp"
         android:background="@color/gray_light"
         android:layout_alignParentBottom="true"
@@ -73,19 +73,18 @@
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:hint="@string/nh_p_tin_nh_n"
-        android:inputType="textMultiLine"
-        />
+        android:inputType="textMultiLine" />
 
 
     <ListView
         android:id="@+id/messages_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/btnSend"
+        android:layout_above="@id/input_Message"
         android:divider="@android:color/transparent"
         android:listSelector="@android:color/transparent"
         android:layout_marginBottom="5dp"
         android:transcriptMode="alwaysScroll"
         android:stackFromBottom="true"
-        android:scrollbars="none"/>
+        android:scrollbars="none" />
 </RelativeLayout>

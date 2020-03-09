@@ -56,7 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/separator"
-        android:layout_above="@+id/btn_comment"/>
+        android:layout_above="@+id/input_comment"/>
 
     <ImageButton
         android:id="@+id/btn_comment"
@@ -74,12 +74,11 @@
         android:id="@+id/input_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/btn_comment"
+        android:layout_toStartOf="@id/btn_comment"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:hint="@string/vi_t_b_nh_lu_n"
-        android:inputType="textMultiLine"
-        />
+        android:inputType="textMultiLine" />
 
 
 </RelativeLayout>

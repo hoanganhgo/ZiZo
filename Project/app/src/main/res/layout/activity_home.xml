@@ -16,8 +16,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:background="@color/white"
-            app:itemIconTint="@color/sky"
-            app:itemTextColor="@color/sky"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:menu="@menu/menu_home"
             />
     </FrameLayout>
