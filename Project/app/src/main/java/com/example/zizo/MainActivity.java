@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (checkLogin(username.getText().toString(),password.getText().toString()))
                 {
-                    startProgressBar(progressBar,60);
+                    startProgressBar(progressBar);
                     String email=username.getText().toString()+"@zizo.com";
                     signIn(email, password.getText().toString());
                 }
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public static void startProgressBar(final ProgressBar progressBar, final int maximum)
+    public static void startProgressBar(final ProgressBar progressBar)
     {
         progressBar.setVisibility(View.VISIBLE);
     }

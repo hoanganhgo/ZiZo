@@ -64,7 +64,7 @@ public class ChatBoxFragment extends Fragment {
         progressBar=view.findViewById(R.id.progressBar_ChatBox);
         started=false;
 
-        MainActivity.startProgressBar(progressBar,50);
+        MainActivity.startProgressBar(progressBar);
 
         //Lấy thông tin user
         FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();

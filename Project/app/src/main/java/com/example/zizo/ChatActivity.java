@@ -78,7 +78,7 @@ public class ChatActivity extends AppCompatActivity {
         paramsZERO.setMargins(0,0,0,0);
         params.setMargins(0,10,0,10);
 
-        MainActivity.startProgressBar(progressBar,35);
+        MainActivity.startProgressBar(progressBar);
         HomeActivity.chatting=false;
 
         //Lấy thông tin đăng nhập

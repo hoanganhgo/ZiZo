@@ -68,7 +68,7 @@ public class FriendFragment extends Fragment{
         progressBar=view.findViewById(R.id.progressBar_friend);
         new_invitation=view.findViewById(R.id.new_invitation);
 
-        MainActivity.startProgressBar(progressBar,40);
+        MainActivity.startProgressBar(progressBar);
 
         //Search button
         btn_search.setOnClickListener(new View.OnClickListener() {

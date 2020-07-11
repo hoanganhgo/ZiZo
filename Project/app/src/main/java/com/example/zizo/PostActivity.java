@@ -95,7 +95,7 @@ public class PostActivity extends AppCompatActivity {
                 chooseFile.setType("*/*");
                 chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
 
-                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                chooseFile = Intent.createChooser(chooseFile, "Chọn hình ảnh");
                 startActivityForResult(chooseFile, PICKFILE_RESULT_CODE);
             }
         });
@@ -106,7 +106,7 @@ public class PostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                MainActivity.startProgressBar(progressBar,150);
+                MainActivity.startProgressBar(progressBar);
                 media.start();
 
                 final String content=editContent.getText().toString();

@@ -63,7 +63,7 @@ public class DiaryFragment extends Fragment {
         ImageButton btn_post = view.findViewById(R.id.btn_post);
         progressBar=(ProgressBar)view.findViewById(R.id.progressBar_Diary);
 
-        MainActivity.startProgressBar(progressBar,80);
+        MainActivity.startProgressBar(progressBar);
 
         //Lấy thông tin user
         FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();

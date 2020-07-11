@@ -66,7 +66,7 @@ public class SearchActivity extends AppCompatActivity {
         gv_suggestions=findViewById(R.id.suggestion_list);
         progressBar=(ProgressBar)findViewById(R.id.progressBar_Search);
 
-        MainActivity.startProgressBar(progressBar,30);
+        MainActivity.startProgressBar(progressBar);
 
         //Lấy danh sách người dùng từ firebase
         final DatabaseReference myRef= FirebaseDatabase.getInstance().getReference().child("User");
@@ -145,6 +145,11 @@ public class SearchActivity extends AppCompatActivity {
                         suggested_users.add(email);
                     }
                     users.add(convertEmailtoUserName(email));
+                }
+
+                //Nếu ko có lời đề nghị nào thì tắt progressbar đi
+                if (suggested_users.size()==0){
+                    MainActivity.finishProgressBar(progressBar);
                 }
 
                 final int[] count = {1};

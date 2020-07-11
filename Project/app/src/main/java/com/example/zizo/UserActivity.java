@@ -76,7 +76,7 @@ public class UserActivity extends AppCompatActivity {
         addFollow=(Button)findViewById(R.id.addFollow);
         progressBar=(ProgressBar)findViewById(R.id.progressBar_User);
 
-        MainActivity.startProgressBar(progressBar,30);
+        MainActivity.startProgressBar(progressBar);
 
         //Lấy email người mình truy cập đến
         Intent intent=getIntent();

@@ -44,7 +44,7 @@ import java.util.Date;
 public class HomeActivity extends AppCompatActivity {
     public static float widthPixels=0f;
     public static float heightPixels=0f;
-    public static String imageDefault="https://firebasestorage.googleapis.com/v0/b/zizo-9fdb5.appspot.com/o/default%2Fempty.png?alt=media&token=ecc7ef9c-98ee-4324-bf6b-e564d25ae7a6";
+    public static String imageDefault="https://firebasestorage.googleapis.com/v0/b/zizo-44e08.appspot.com/o/default%2Fempty.png?alt=media&token=d0ef7d28-0e49-415b-901a-a044621a9cd7";
     public static boolean resetDiary=true;
     public static boolean chatting=true;
 

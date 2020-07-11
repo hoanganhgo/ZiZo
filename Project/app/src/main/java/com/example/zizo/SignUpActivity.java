@@ -108,7 +108,7 @@ public class SignUpActivity extends AppCompatActivity {
                 if (checkSignUp(username.getText().toString(),password.getText().toString(),rePassword.getText().toString(),
                         nickName.getText().toString(),male.isChecked() | female.isChecked(),dateOfBirth.getText().toString()))
                 {
-                    MainActivity.startProgressBar(progressBar,80);
+                    MainActivity.startProgressBar(progressBar);
 
                     String email=username.getText().toString()+"@zizo.com";
                     register(email, password.getText().toString());
@@ -169,9 +169,9 @@ public class SignUpActivity extends AppCompatActivity {
         String avatar=null;
         if (sex.contentEquals("Nam"))
         {
-            avatar="https://firebasestorage.googleapis.com/v0/b/zizo-9fdb5.appspot.com/o/default%2Fman.png?alt=media&token=a8cfc07a-a4f4-4e80-b302-4d1fa6ddbb8c";
+            avatar="https://firebasestorage.googleapis.com/v0/b/zizo-44e08.appspot.com/o/default%2Fmale.png?alt=media&token=39c72553-2d59-4d34-91d5-77e56ee94d28";
         }else {
-            avatar="https://firebasestorage.googleapis.com/v0/b/zizo-9fdb5.appspot.com/o/default%2Fwoman.png?alt=media&token=bfe3bb42-0faf-4d52-9e69-81439f52cc0d";
+            avatar="https://firebasestorage.googleapis.com/v0/b/zizo-44e08.appspot.com/o/default%2Ffemale.png?alt=media&token=146dd49e-6d8b-4805-9b45-834a729b5132";
         }
 
         User user=new User(email,nickName,avatar,dateOfBirth,sex,realTime,null,null, null);

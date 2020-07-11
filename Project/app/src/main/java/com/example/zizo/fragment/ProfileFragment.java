@@ -81,7 +81,7 @@ public class ProfileFragment extends Fragment {
         sumFollows=view.findViewById(R.id.sumFollows);
         progressBar=view.findViewById(R.id.progressBar_Profile);
 
-        MainActivity.startProgressBar(progressBar,30);
+        MainActivity.startProgressBar(progressBar);
 
 
         //Lấy thông tin user
